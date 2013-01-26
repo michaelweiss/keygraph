@@ -7,7 +7,8 @@ import re
 import itertools
 import time
 import unicodedata
-
+ 
+  
 M = 30
 
 print 'start'
@@ -15,7 +16,7 @@ print 'start'
 def delNoise(text):
 #   ノイズファイルの詠み込み
     noise_list=[]
-    for line in codecs.open('./noise.txt', 'r', 'utf-8'):
+    for line in codecs.open('./noise/noise.txt', 'r', 'utf-8'):
         noise_list.append(line[:-1].split("\n"))	
 
 #ノイズ削除
@@ -362,7 +363,7 @@ def c(high_key,base,sentences):
 if __name__ == "__main__":
     stime = time.time() 
 #   イベントファイル読み込み
-    f = codecs.open('./sapporoWinFes.txt', 'r', 'utf-8')
+    f = codecs.open('./fes/sapporoWinFes.txt', 'r', 'utf-8')
     text = f.read()
     f.close()
 
