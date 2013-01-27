@@ -232,30 +232,7 @@ def C(hk, base, sents):
             for s in sents:
                     c[k][b] += s.count(k) * s.count(b)
     
-    csum = {}
-     
-#   Csumの値の計算
-    for k in hk:
-        csum[k] = 0
-        for b in base:
-            csum_hk[k] += c[k][b]
-
-    for b in base:
-        csum[b] = 0
-        for k in hk:
-            csum_ba[b] += c[k][b]
-             
-              
-    csum_list = sorted(csum.items(), key=lambda x:x[1]) 
-    
-    print "Cの合計だよー"
-    for k,v in csum_list:
-        print k,v
-         
-    csum = [kw for kw,cs in csum_list[-12:]]
-    max_c = {}
-    for 
-      
+          
 #	listにしています	
     c_list = [] 
     for x in c.keys():
@@ -264,7 +241,7 @@ def C(hk, base, sents):
     
     c_list.sort(key=lambda a: a[2])
 
-    return c_list,csum_list 
+    return c_list 
   
 def draw(base, G_C):
     fout = codecs.open("./dot/base.dot","w","utf-8")
@@ -283,7 +260,7 @@ def draw(base, G_C):
 if __name__ == "__main__":
     stime = time.time() 
 #   イベントファイル読み込み
-    f = codecs.open('./fes/comicMarket.txt', 'r', 'utf-8')
+    f = codecs.open('./fes/tenjinFes.txt', 'r', 'utf-8')
     text = f.read()
     f.close()
 
@@ -335,23 +312,17 @@ if __name__ == "__main__":
      
 
 #	c(wi,wj)の計算 [hk, base, スコア]が返り値
-    C,Csum = C(high_key, G_base, sents)	
-    
-    G_Csum = [kw for kw,cs in Csum[-12:]]
+    C = C(high_key, G_base, sents)	
      
     C.sort(key=lambda x:x[2])
      
     G_C = [[i,j] for i,j,c in C[-12:]]  
-     
      
     for i,j in base:
         print i,j
     
     for x,y in G_C:
         print x,y
-         
-    for x in G_Csum:
-        print x
     
     draw(base,G_C)
 

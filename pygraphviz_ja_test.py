@@ -2,7 +2,7 @@
 from pygraphviz import *
 import codecs
 
-f = codecs.open("base.dot","r","utf-8")
+f = codecs.open("./dot/base.dot","r","utf-8")
 
 base = ""
 for row in f:
@@ -23,4 +23,4 @@ graph graph1
  
 graph = AGraph(string=base)
 graph.layout(prog='dot')
-graph.draw('pgv1.png')
+graph.draw('./graphs/pgv1.png')
