@@ -101,8 +101,8 @@ def creIdiom(words, text):
     list_comb_q = di_comb_q.items()
     list_comb_q.sort(key=lambda a: a[1])
 
-#	    候補pについてpを含む候補qの出現回数がp以上ならばpを,p以下ならばqを候補から捨てる．
-#	    {bcd}は{cd}を含むという	
+#   候補pについてpを含む候補qの出現回数がp以上ならばpを,p以下ならばqを候補から捨てる．
+#   {bcd}は{cd}を含むという	
     for kq,vq in list_comb_q:
         for kp,vp in list_comb_p:
 #			含むかどうか確認		 
@@ -290,13 +290,6 @@ def calCo(hf,sents):
  
 #linkを張る
 def link(base):
-    fout = codecs.open("base.dot","w","utf-8")
-    fout.write("graph base {\n")
-    for i,j in base:
-       fout.write(i + "--" + j +"\n")
-    fout.write("}")
-
-    fout.close()
     base_set = flatten(base)
     print base_set
     print 'べーすだよ＾＾ーーーーーーーーーー' 
@@ -454,17 +447,14 @@ def c(high_key,base,sents):
 '''
 
 
-def c(hk, hf, sents):
+def C(hk, base, sents):
     c = {}
     for k in hk:
-        for f in hf:
+        c[k] = {}
+        for b in base:
+            c[k][b] = 0
             for s in sents:
-                if k in c:
-                    c[k][f] += s.count(k) * s.count(f)
-                else:
-                    c[k] = {}
-                    c[k][f] = 0
-                    c[k][f] += s.count(k) * s.count(f)
+                    c[k][b] += s.count(k) * s.count(b)
                      
 #	listにしています	
     c_list = [] 
@@ -474,10 +464,21 @@ def c(hk, hf, sents):
     
     c_list.sort(key=lambda a: a[2])
 
-    return co_list 
+    return c_list 
   
                          
     
+def draw(base, G_C):
+    fout = codecs.open("base.dot","w","utf-8")
+    fout.write('graph base {\n')
+    for i,j in base:
+       fout.write(i + '--' + j +'\n')
+    for i,j in G_C:
+       fout.write(i + '--' + j + '[style="dotted"]\n')
+    fout.write('}')
+     
+
+    fout.close()
 
 
          
@@ -485,7 +486,7 @@ def c(hk, hf, sents):
 if __name__ == "__main__":
     stime = time.time() 
 #   イベントファイル読み込み
-    f = codecs.open('./fes/sapporoWinFes.txt', 'r', 'utf-8')
+    f = codecs.open('./fes/fujiRockFes.txt', 'r', 'utf-8')
     text = f.read()
     f.close()
 
@@ -537,13 +538,11 @@ if __name__ == "__main__":
      
     base = [[i,j] for i,j,c in co[-30:]]  
 
-    for i,j in base:
-        print i,j
-         
+        
     #baseに入っているノードを返す      
-    base = link(base)   
+    G_base = link(base)   
      
-    print base 
+    print G_base 
      
       
     '''
@@ -558,23 +557,35 @@ if __name__ == "__main__":
     '''
      
 #	keyの計算 ＊＊＊＊＊＊＊＊high_freqの所は要相談＊＊＊＊＊＊＊＊＊＊
-    key = key(words, wfs, base, sents)
+    key = key(words, wfs, G_base, sents)
  
 #	high_keyの計算
     high_key = sorted(key.items(), key=lambda x:x[1])
     high_key = high_key[-12:]
-    print high_key
-    ''' 
-#	c(wi,wj)の計算
-    c(high_key, base, sents)	
+    
+    high_key = [k for k,f in high_key]
+    print "high_keyだよーーーーーー"
+    for h in high_key:
+        print h
+     
+
+#	c(wi,wj)の計算 [hk, base, スコア]が返り値
+
+    C = C(high_key, G_base, sents)	
+    
+    C.sort(key=lambda x:x[2])
+     
+    G_C = [[i,j] for i,j,c in C[-12:]]  
+     
+    for i,j in base:
+        print i,j
+    
+    for x,y in G_C:
+        print x,y
+    
+    draw(base,G_C)
 
     etime = time.time()
-
+   
     print etime - stime	
-    '''
-    '''     
-    for (k,v) in high_freq:
-        print k,v
-         
-#print len(result)
-    ''' 
+     
