@@ -297,6 +297,16 @@ def link(base):
     fout.write("}")
 
     fout.close()
+    base_set = flatten(base)
+    print base_set
+    print 'べーすだよ＾＾ーーーーーーーーーー' 
+    base_set = set(base_set)
+ 
+    for i in base_set:
+        print i
+         
+    print list(base_set)
+    return list(base_set)
 
     '''
 #リンクを張る
@@ -354,21 +364,28 @@ def link(base_comb_dec, base_co, high_freq):
             if base_graph_link[x][y] >= 1:				
                 print x,y
 
-
-
     '''
+     
+#リストの平坦化 
+def flatten(x, isflat=lambda x:not isinstance(x, list)):
+    if isflat(x):
+        yield x
+    else:
+        for item in x:
+            for i in flatten(item, isflat):
+                yield i
                             
 #key値の計算
 def key(words, wfs, base, sents):
 #	keyは辞書型　key = {w:key値}	
     key = {}
-    for g,y in base:
-        Fg = fg(words, wfs, base, sents)
+     
+    Fg = fg(words, wfs, base, sents)
 
-    for w,x in words:
+    for w in words:
         tmp = 1.0
         tmp_count = 0
-        for g,y in base:
+        for g in base:
 #			stime = time.time()
 #  			fwg(w,g,sents)
 #			entime = time.time()
@@ -383,7 +400,7 @@ def key(words, wfs, base, sents):
 def fwg(w,wfs,g,sents):	
     gws = 0
     fwg = 0
-    for s in range(len(sents)):
+    for s in sents:
 #		|g-w|sの計算  gs = wfs[g][s] ws = ws[w][s]
         if g.find(w) >= 0:# w ∈ g
 #			|g|sの計算
@@ -393,21 +410,21 @@ def fwg(w,wfs,g,sents):
         fwg += wfs[w][s]*gws
     return fwg
 
-
 #F(g)の計算
 def fg(words, wfs, base, sents):
     fg = {}
-    for g,y in base:
+    for g in base:
         fg[g] = 0
-        for s in range(len(sents)):
-            for w,f in words:
-                if sents[s].find(w) >= 0:
+        for s in sents:
+            for w in words:
+                if s.find(w) >= 0:
                     if g.find(w) >= 0:# w ∈ g
                         fg[g] += wfs[g][s] - wfs[w][s]
                     else:# w not ∈ g
                         fg[g] += wfs[g][s] 
     return fg
 
+'''
 #Cの計算 wi : HighKey中の語　wj:いずれかの土台に含まれる語
 def c(high_key,base,sents):
     c = {} 
@@ -434,6 +451,35 @@ def c(high_key,base,sents):
 
     for k, v in sorted(c_sum.items(), key=lambda x:x[1]):
         print k, v
+'''
+
+
+def c(hk, hf, sents):
+    c = {}
+    for k in hk:
+        for f in hf:
+            for s in sents:
+                if k in c:
+                    c[k][f] += s.count(k) * s.count(f)
+                else:
+                    c[k] = {}
+                    c[k][f] = 0
+                    c[k][f] += s.count(k) * s.count(f)
+                     
+#	listにしています	
+    c_list = [] 
+    for x in c.keys():
+        for y in c[x].keys():
+            c_list.append([x,y,c[x][y]])
+    
+    c_list.sort(key=lambda a: a[2])
+
+    return co_list 
+  
+                         
+    
+
+
          
 #-----------Main----------------
 if __name__ == "__main__":
@@ -494,33 +540,39 @@ if __name__ == "__main__":
     for i,j in base:
         print i,j
          
-    link(base)   
+    #baseに入っているノードを返す      
+    base = link(base)   
+     
+    print base 
+     
+      
     '''
 #	highFreqの組み合わせの辞書
 #    base_comb_dec = list2combDec(high_freq)
 
 #	high_freqの共起度を計算　上位Mを返す
 #    base = calCo(base_comb_dec, sents)
-    
+     
 #	土台graph作る high_freq中の語の共起度の順にM-1本のリンクを張る
     link = link(base_comb_dec, base, high_freq)
-
+    '''
+     
 #	keyの計算 ＊＊＊＊＊＊＊＊high_freqの所は要相談＊＊＊＊＊＊＊＊＊＊
-    key = key(words, wfs, high_freq, sents)
-
+    key = key(words, wfs, base, sents)
+ 
 #	high_keyの計算
     high_key = sorted(key.items(), key=lambda x:x[1])
     high_key = high_key[-12:]
     print high_key
-     
-
+    ''' 
 #	c(wi,wj)の計算
-    c(high_key, high_freq, sents)	
+    c(high_key, base, sents)	
 
     etime = time.time()
 
     print etime - stime	
-     
+    '''
+    '''     
     for (k,v) in high_freq:
         print k,v
          
