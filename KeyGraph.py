@@ -19,7 +19,7 @@ def delNoise(text):
     for line in codecs.open('./noise/noise.txt', 'r', 'utf-8'):
         noise_list.append(line[:-1].split("\n"))	
 
-#ノイズ削除
+#   ノイズ削除
     for i in range(len(noise_list)-1):
         noise =  noise_list[i]
         text = text.replace(noise[0], u'')
@@ -29,9 +29,9 @@ def delNoise(text):
 def creSentence(text):
     s_cha = u'。'
 #	    cat = re.split(ur"", text)
-    sentences = []
-    sentences = text.strip(s_cha).split(s_cha)
-    return sentences
+    sents = []
+    sents = text.strip(s_cha).split(s_cha)
+    return sents
 
 #名詞だけを取得してリストにいれる　リストを返す 数字抜き
 def pyMecab(s):
@@ -64,8 +64,9 @@ def isValid(word):
         if not (unicodedata.name(c)[0:8] == "HIRAGANA" or
                unicodedata.name(c)[0:8] == "KATAKANA" or
                unicodedata.name(c)[0:3] == "CJK" or
-               unicodedata.name(c)[0:5] == "DIGIT" or
-               unicodedata.name(c)[0:5] == "LATIN"):
+               unicodedata.name(c)[0:5] == "DIGIT" 
+#               英語を削除しています　コメントをとれば英語も入ります． 
+              ''' unicodedata.name(c)[0:5] == "LATIN"'''):
             return False
     return True
      
@@ -131,7 +132,6 @@ def pop(dic_p, dic_q):
     list_q = dic_q.items()
     list_q.sort(key=lambda a: a[1])
      
-     
     for kq,vq in list_q:
         for kp,vp in list_p:
 #			含むかどうか確認
@@ -139,11 +139,21 @@ def pop(dic_p, dic_q):
 #				print kp, di_comb_p[kp], kq, di_idiom_q[kq]
                 if(dic_p.get(kp) <= dic_q.get(kq)):
                     if(dic_p.has_key(kp)):
-                        print kp, kq
+                        #print kp, kq
                         dic_p.pop(kp)
                 else:
                     if(dic_q.has_key(kq)):
-                        print kq, kp
+                        #print kq, kp
+                        dic_q.pop(kq)
+            if(kp.count(kq)>0):
+#				print kp, di_comb_p[kp], kq, di_idiom_q[kq]
+                if(dic_p.get(kp) <= dic_q.get(kq)):
+                    if(dic_p.has_key(kp)):
+                        #print kp, kq
+                        dic_p.pop(kp)
+                else:
+                    if(dic_q.has_key(kq)):
+                        #print kq, kp
                         dic_q.pop(kq)
                          
                          
@@ -154,19 +164,56 @@ def pop(dic_p, dic_q):
     list_p.sort(key=lambda a: a[1])
 
     return list_p
+
+'''
+def popin(words_freq):
+
+    for w1,f1 in words_freq:
+        print w1 
+        for w2,f2 in words_freq[words_freq.index([w1,f1])+1:]:
+            if(w1.count(w2)>0):
+                if(f1 <= f2):
+                    words_freq.remove([w1,f1])
+                else:
+                    words_freq.remove([w2,f2])
+            if(w2.count(w1)>0):
+                if(f1 <= f2):
+                    words_freq.remove([w1,f1])
+                else:
+                    words_freq.remove([w2,f2])
+    return words_freq 
                      
+def test(words, fd):
+    for w1 in words:
+        for w2 in words[words.index(w1)+1:]:
+            if(w1.count(w2)>0):
+                if(fd[w1] <= fd[w2]):
+                    words.remove(w1)
+                    print w1
+                else:
+                    words.remove(w2)
+                    print w2
+            if(w2.count(w1)>0):
+                if(fd[w1] <= fd[w2]):
+                    words.remove(w1)
+                    print w1 
+                else:
+                    words.remove(w2)
+                    print w2 
+''' 
+    
+
+
 #単語出現度でリストをソートする為に辞書にする
-def listToDict(list):
+def freqcount(tokens):
     result={}
 #   単語の出現でカウント(list内のカウント）
-    for i in list:
-        if result.has_key(i):
-            result[i] += 1
+    for t in tokens:
+        if result.has_key(t):
+            result[t] += 1
         else:
-            result[i] = 1
-#   出現回数でソート	
-    s_result = sorted(result.items(), key=lambda x:x[1])
-    return s_result	
+            result[t] = 1
+    return result	
 
 #   dicをソートして単語:出現回数のリストで返す関数
 def dic2list(dic):
@@ -185,29 +232,29 @@ def list2combDec(list):
     return comb
 
 #リスト['word']['sentence　インデックス']=出現回数　を返す関数
-def occur(words, sentences):
+def calwfs(words, sents):
     wfs = {} 
-    for w,n in words:
-        for s in range(len(sentences)):
+    for w in words:
+        for s in sents:
             if w in wfs:
-                wfs[w][s] = sentences[s].count(w)
+                wfs[w][s] = s.count(w)
             else:
                 wfs[w] = {}
-                wfs[w][s] = sentences[s].count(w) 
+                wfs[w][s] = s.count(w) 
 
 #	for w,n in words:
-#		for s in range(len(sentences)):
+#		for s in range(len(sents)):
 #			print wfs[w][s]	
 
     return wfs	
-     
+'''     
 #共起度coを計算する
-def calCo(base_comb_dec, sentences):
+def calCo(base_comb_dec, sents):
     co = base_comb_dec 
 #	同じ文書内で語が共起していたらカウントアップ
     for x in co.keys():
         for y in co[x].keys():
-            for s in sentences:
+            for s in sents:
                 co[x][y] += s.count(x) * s.count(y)
                     
     co_list = []
@@ -219,7 +266,39 @@ def calCo(base_comb_dec, sentences):
     co_list.sort(key=lambda a: a[2])
 
     return co_list[len(co_list)-M:len(co_list)]	
+'''
+#共起度coを計算する
+def calCo(hf,sents):
+    co = {} 
+    for hf1 in hf:
+        co[hf1] = {} #初期化
+        for hf2  in hf[hf.index(hf1)+1:]:
+            co[hf1][hf2] = 0 
+            for s in sents:
+                co[hf1][hf2] += s.count(hf1) * s.count(hf2)
+                 
+#	listにしています	
+    co_list = [] 
+    for x in co.keys():
+        for y in co[x].keys():
+            co_list.append([x,y,co[x][y]])
+    
+    co_list.sort(key=lambda a: a[2])
 
+    return co_list 
+ 
+ 
+#linkを張る
+def link(base):
+    fout = codecs.open("base.dot","w","utf-8")
+    fout.write("graph base {\n")
+    for i,j in base:
+       fout.write(i + "--" + j +"\n")
+    fout.write("}")
+
+    fout.close()
+
+    '''
 #リンクを張る
 def link(base_comb_dec, base_co, high_freq):
     base_graph_link =  base_comb_dec 	
@@ -248,7 +327,6 @@ def link(base_comb_dec, base_co, high_freq):
         if flag == False:
             con_graph_list.append(set([x,y]))
 
-    '''
 #	グラフの連結をset（集合）型で表現する
     for x in base_graph_link.keys():
         for y in base_graph_link[x].keys():
@@ -281,31 +359,31 @@ def link(base_comb_dec, base_co, high_freq):
     '''
                             
 #key値の計算
-def key(words, wfs, base, sentences):
+def key(words, wfs, base, sents):
 #	keyは辞書型　key = {w:key値}	
     key = {}
     for g,y in base:
-        Fg = fg(words, wfs, base, sentences)
+        Fg = fg(words, wfs, base, sents)
 
     for w,x in words:
         tmp = 1.0
         tmp_count = 0
         for g,y in base:
 #			stime = time.time()
-#  			fwg(w,g,sentences)
+#  			fwg(w,g,sents)
 #			entime = time.time()
 #			print(str(entime-stime))		
-            tmp *= (1-(fwg(w,wfs,g,sentences)*(1.0)/Fg[g])) 
+            tmp *= (1-(fwg(w,wfs,g,sents)*(1.0)/Fg[g])) 
         key[w] = 1.0-tmp 
         print 1.0-tmp, w 
          
     return key		
 
 #f(w,g)計算
-def fwg(w,wfs,g,sentences):	
+def fwg(w,wfs,g,sents):	
     gws = 0
     fwg = 0
-    for s in range(len(sentences)):
+    for s in range(len(sents)):
 #		|g-w|sの計算  gs = wfs[g][s] ws = ws[w][s]
         if g.find(w) >= 0:# w ∈ g
 #			|g|sの計算
@@ -317,13 +395,13 @@ def fwg(w,wfs,g,sentences):
 
 
 #F(g)の計算
-def fg(words, wfs, base, sentences):
+def fg(words, wfs, base, sents):
     fg = {}
     for g,y in base:
         fg[g] = 0
-        for s in range(len(sentences)):
+        for s in range(len(sents)):
             for w,f in words:
-                if sentences[s].find(w) >= 0:
+                if sents[s].find(w) >= 0:
                     if g.find(w) >= 0:# w ∈ g
                         fg[g] += wfs[g][s] - wfs[w][s]
                     else:# w not ∈ g
@@ -331,15 +409,15 @@ def fg(words, wfs, base, sentences):
     return fg
 
 #Cの計算 wi : HighKey中の語　wj:いずれかの土台に含まれる語
-def c(high_key,base,sentences):
+def c(high_key,base,sents):
     c = {} 
     for wi,fi in high_key:#	high key
         c[wi] = {}#初期化
         for wj,fj in base:
             c[wi][wj] = 0#初期化
 #			c[wi][wj]の辞書を作るよー
-            for s in range(len(sentences)):
-                c[wi][wj] += sentences[s].count(wi) * sentences[s].count(wj)		 
+            for s in range(len(sents)):
+                c[wi][wj] += sents[s].count(wi) * sents[s].count(wj)		 
                 
 #			print wi,wj,c[wi][wj]
 
@@ -357,8 +435,6 @@ def c(high_key,base,sentences):
     for k, v in sorted(c_sum.items(), key=lambda x:x[1]):
         print k, v
          
-         
-         
 #-----------Main----------------
 if __name__ == "__main__":
     stime = time.time() 
@@ -371,52 +447,66 @@ if __name__ == "__main__":
     nc_text = delNoise(text)
      
 #	センテンスリストの作成
-    sentences = creSentence(nc_text)
+    sents = creSentence(nc_text)
 
 #	形態素解析
-    terms = pyMecab(nc_text) 
+    tokens = pyMecab(nc_text) 
        
-#	単語-出現度のリストの作成	
-    words = listToDict(terms)
-
+#	単語-出現度の辞書作成	
+    freq_dict = freqcount(tokens)
+    
 #	熟語-出現度のリストの作成
-#   idioms = creIdiom(terms, nc_text)
+#    idioms = creIdiom(tokens, nc_text)
 
-    words = pop(dict(words), dict(words)) 
-
-    words.sort(key=lambda a: a[1])
-#	for w,f in words:
-#  		print w,f
-
-#	熟語と単語を合体
-#	words.extend(idioms)
-
-#	ソート
-    words.sort(key=lambda a: a[1])
+    words_freq = sorted(freq_dict.items(), key=lambda x:x[1])
      
-###################################################
+    words_freq = pop(dict(words_freq), dict(words_freq)) 
+     
+#    words_freq = popin(words_freq)
+ 
+   
+#    words_freq.sort(key=lambda a: a[1])
+    
+         
+    words = [w for w,z in words_freq]
+     
+#    test(words, freq_dict) 
+ 
 #	リスト[words][センテンス番号] = 出現回数のリストwfs
-    wfs = occur(words, sentences)
+    wfs = calwfs(words, sents)
 
 #	HighFreqを決める
-    high_freq = words[-30:]
+    hf = [w for w,f in words_freq[-30:]]
+
+    for w in hf:
+        print w
+  
+#   HighFreqの共起度を計算する 返り値リスト[wi,wj,co]
+    co = calCo(hf,sents)
+     
+    for i,j,c in co:
+        print i,j,c
 
     del words[-30:]
+     
+    base = [[i,j] for i,j,c in co[-30:]]  
 
-    for w,f in high_freq:
-        print w, f
-
+    for i,j in base:
+        print i,j
+         
+    link(base)   
+    '''
 #	highFreqの組み合わせの辞書
-    base_comb_dec = list2combDec(high_freq)
+#    base_comb_dec = list2combDec(high_freq)
 
 #	high_freqの共起度を計算　上位Mを返す
-    base = calCo(base_comb_dec, sentences)
-     
+#    base = calCo(base_comb_dec, sents)
+    
 #	土台graph作る high_freq中の語の共起度の順にM-1本のリンクを張る
     link = link(base_comb_dec, base, high_freq)
 
 #	keyの計算 ＊＊＊＊＊＊＊＊high_freqの所は要相談＊＊＊＊＊＊＊＊＊＊
-    key = key(words, wfs, high_freq, sentences)
+    key = key(words, wfs, high_freq, sents)
 
 #	high_keyの計算
     high_key = sorted(key.items(), key=lambda x:x[1])
@@ -425,15 +515,14 @@ if __name__ == "__main__":
      
 
 #	c(wi,wj)の計算
-    c(high_key, high_freq, sentences)	
+    c(high_key, high_freq, sents)	
 
     etime = time.time()
 
     print etime - stime	
      
-    '''	
     for (k,v) in high_freq:
         print k,v
-    '''		 
          
 #print len(result)
+    ''' 
