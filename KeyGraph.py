@@ -7,6 +7,7 @@ import re, pprint
 import itertools
 import time
 import unicodedata
+import os 
  
 sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
 sys.stdin = codecs.getreader('utf_8')(sys.stdin)
@@ -20,6 +21,19 @@ def pp(obj):
 M = 30
 
 print 'start'
+
+def readFiles():
+    f_list = os.listdir('/Users/SS/python/keygraph/txt_files/')
+    files = []
+    for f in f_list:
+        files.append(f.replace(".txt", ""))
+
+    for f in files:
+        print f
+
+    return files
+
+
 #ノイズの削除
 def delNoise(text):
 #   ノイズファイルの読み込み
@@ -31,8 +45,8 @@ def delNoise(text):
     for i in range(len(noise_list)-1):
         noise =  noise_list[i]
         text = text.replace(noise[0], u'')
-    return text
-
+    return text 
+ 
 #センテンス（文）のlist作成
 def creSentence(text):
     s_cha = u'。'
@@ -251,8 +265,8 @@ def C(hk, base, sents):
 
     return c_list 
   
-def draw(base, G_C):
-    fout = codecs.open("./dot/base.dot","w","utf-8")
+def draw(base, G_C,fname):
+    fout = codecs.open("./dot/" + fname + ".dot","w","utf-8")
     fout.write('graph keygraph {\n')
     fout.write('graph [size="10,10"]\n')
     for i,j in base:
@@ -263,30 +277,54 @@ def draw(base, G_C):
      
     fout.close()
 
-def adjacency_dic(base, G_C):
+#隣接リストを作ったけど微妙だね． 
+def adjacency_dic(base, G_C, fname):
     a_dic = {}
+     
     for i,j in base:
         if a_dic.has_key(i):
-            a_dic[i].append(j)
+            a_dic[i].append([j,'base'])
         else:
-            a_dic[i] = [j] 
+            a_dic[i] = [[j,'base']] 
         if a_dic.has_key(j):
-            a_dic[j].append(i)
+            a_dic[j].append([i,'base'])
         else:
-            a_dic[j] = [i] 
+            a_dic[j] = [[i,'base']] 
+    
+    for i,j in G_C:
+        if a_dic.has_key(i):
+            a_dic[i].append([j,'key'])
+        else:
+            a_dic[i] = [[j,'key']] 
+        if a_dic.has_key(j):
+            a_dic[j].append([i,'key'])
+        else:
+            a_dic[j] = [[i,'key']] 
 
-    print pp(a_dic)
+
+    fout = codecs.open("./adjacency_list/" + fname + ".txt","w","utf-8")
+    fout.write(pp(a_dic.items()))
+    fout.close()
 
          
          
         
-
-         
 #-----------Main----------------
 if __name__ == "__main__":
     stime = time.time() 
-#   イベントファイル読み込み
-    f = codecs.open('./fes/kantouFes.txt', 'r', 'utf-8')
+#   コンソールからファイル名を読み込む 
+    argvs = sys.argv
+    argc = len(argvs)
+    if(argc != 2):
+        print 'Usage: #python %s filename' % argvs[0]
+        quit()
+         
+    print pp(argvs)
+    fname = argvs[1]
+    
+    
+    f = codecs.open('./txt_files/' + argvs[1] + '.txt', 'r', 'utf-8')
+     
     text = f.read()
     f.close()
 
@@ -350,13 +388,12 @@ if __name__ == "__main__":
     for x,y in G_C:
         print x,y
     
-    draw(base,G_C)
+    draw(base, G_C, fname)
 
-    adjacency_dic(base, G_C)
+    adjacency_dic(base, G_C, fname)
          
     etime = time.time()
-     
-   
-    print etime - stime	
-     
-      
+ 
+
+print etime - stime	
+
