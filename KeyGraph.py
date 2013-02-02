@@ -1,13 +1,21 @@
-#! /Document/python/testMecab.py
-# -*- coding:utf-8 -*-
+#! python/keygraph/KeyGraph.py
+# -*- coding: utf-8 -*-
 import sys
 import MeCab
 import codecs
-import re
+import re, pprint
 import itertools
 import time
 import unicodedata
  
+sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
+sys.stdin = codecs.getreader('utf_8')(sys.stdin)
+
+def pp(obj):
+    pp = pprint.PrettyPrinter(indent=4, width=160)
+    str = pp.pformat(obj)
+    return re.sub(r"\\u([0-9a-f]{4})", lambda x: unichr(int("0x"+x.group(1),16)),str)
+
   
 M = 30
 
@@ -245,7 +253,8 @@ def C(hk, base, sents):
   
 def draw(base, G_C):
     fout = codecs.open("./dot/base.dot","w","utf-8")
-    fout.write('graph base {\n')
+    fout.write('graph keygraph {\n')
+    fout.write('graph [size="10,10"]\n')
     for i,j in base:
        fout.write(i + '--' + j +'\n')
     for i,j in G_C:
@@ -254,13 +263,30 @@ def draw(base, G_C):
      
     fout.close()
 
+def adjacency_dic(base, G_C):
+    a_dic = {}
+    for i,j in base:
+        if a_dic.has_key(i):
+            a_dic[i].append(j)
+        else:
+            a_dic[i] = [j] 
+        if a_dic.has_key(j):
+            a_dic[j].append(i)
+        else:
+            a_dic[j] = [i] 
+
+    print pp(a_dic)
+
+         
+         
+        
 
          
 #-----------Main----------------
 if __name__ == "__main__":
     stime = time.time() 
 #   イベントファイル読み込み
-    f = codecs.open('./fes/tenjinFes.txt', 'r', 'utf-8')
+    f = codecs.open('./fes/kantouFes.txt', 'r', 'utf-8')
     text = f.read()
     f.close()
 
@@ -326,7 +352,11 @@ if __name__ == "__main__":
     
     draw(base,G_C)
 
+    adjacency_dic(base, G_C)
+         
     etime = time.time()
+     
    
     print etime - stime	
      
+      
