@@ -11,10 +11,11 @@ Created on Fri Feb 12 13:20:30 2021
 # from nltk.collocations import *
 
 def delNoise(text):
-    noise_list=[]
-    for line in open('./noise/noise.txt', 'r'):
-        noise_list.append(line[:-1])	
-    return noise_list
+    nl = noise_list()
+    return nl
+
+def noise_list():
+    return [line[:-1] for line in open('./noise/noise.txt', 'r')]
     
 #-----------Main----------------
 if __name__ == "__main__":
