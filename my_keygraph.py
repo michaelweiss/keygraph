@@ -11,9 +11,13 @@ Created on Fri Feb 12 13:20:30 2021
 # from nltk.collocations import *
 
 def delNoise(text):
-    nl = noise_list()
-    return nl
+    # Read noise file
+    # Remove noise
+    # We don't need to do this. What we need is some code to
+    # strip html tags and punctuation from a document.         
+    return text
 
+# Read noise file
 def noise_list():
     return [line[:-1] for line in open('./noise/noise.txt', 'r')]
     
@@ -22,7 +26,7 @@ if __name__ == "__main__":
     # Read event file
     f = open('./txt_files/actions.txt', 'r')
     raw = f.read()
-    
+        
     # Delete noise
     delNraw = delNoise(raw)
     
