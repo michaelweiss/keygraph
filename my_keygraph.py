@@ -7,10 +7,10 @@ Created on Fri Feb 12 13:20:30 2021
 """
 
 # import sys
-# import nltk
+import nltk
 # from nltk.collocations import *
 
-def delNoise(text):
+def delete_noise(text):
     # Read noise file
     # Remove noise
     # We don't need to do this. What we need is some code to
@@ -21,6 +21,14 @@ def delNoise(text):
 def noise_list():
     return [line[:-1] for line in open('./noise/noise.txt', 'r')]
     
+# Create sentences
+def create_sentences(text):
+    return nltk.tokenize.sent_tokenize(text)
+
+# Create words
+def create_words(text):
+    return nltk.tokenize.word_tokenize(text)
+
 #-----------Main----------------
 if __name__ == "__main__":
     # Read event file
@@ -28,6 +36,12 @@ if __name__ == "__main__":
     raw = f.read()
         
     # Delete noise
-    delNraw = delNoise(raw)
+    del_nraw = delete_noise(raw)
     
-    print(delNraw)
+    # Divide into sentences
+    sentences = create_sentences(del_nraw) 
+    
+    # Divide into words and punctuation
+    words = create_words(del_nraw)
+    
+    print(words)
