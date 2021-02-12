@@ -1,0 +1,22 @@
+Conduct remote experiments with some employees.
+Establish collaboration guidelines.
+Supply team with necessary infrastructure.
+Control of source code.
+Provide access to test and production environments.
+Define official chat tool (collaboration tool).
+Define official document storage tool.
+Define tool for sprint retrospectives.
+Migrate planning activities to new management platform.
+Establish regular delivery pace.
+Align expectations with stakeholder.
+Give titles to meetings in collaboration tool.
+Establish daily meeting in collaboration tool.
+Establish a stand-down report.
+Conduct training and workshops.
+Shorten distance among team members.
+Conduct socialization events.
+Establish code review.
+Build wiki in management platform.
+Make rounds of knowledge sharing.
+Define communication schedule with stakeholders.
+Regular feedback for team working from home.
