@@ -21,10 +21,12 @@ def noise_list():
     return [line[:-1] for line in open('./noise/noise.txt', 'r')]
     
 # Create sentences
+# Returns a list of strings
 def create_sentences(text):
     return nltk.tokenize.sent_tokenize(text)
 
 # Create words
+# Returns a list of strings
 def create_words(text):
     return nltk.tokenize.word_tokenize(text)
 

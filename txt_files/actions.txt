@@ -1,3 +1,3 @@
-Define official chat tool (collaboration tool).
-Define official document storage tool.
-Define tool for sprint retrospectives.
+Why are we even building an n-armed bandit in the first place? Why not just use an A/B/n test? Or maybe get your customer on the phone and ask a question? We have data on what customers buy. So you might own a store that sells perfume or cologne, and you know what people are buying. Here’s the thing though, things change; something might be trendy last week isn’t popular next.
+Season’s shift tastes change, and people change as well. Some people are very open to experience while others aren’t. Some are open to exploration, while others want the same thing every time.
+N-armed bandits do an excellent job at balancing exploration and exploitation. Whether it’s epsilon greedy, upper confidence bound, Thompson sampling all these algorithms balance. The other reason is that while your employees could ask and make recommendations, this is expensive. You could do that. Asking is what many department stores did for many years. Whether you went to the perfume counter or the paint desk at a hardware store, employees make recommendations. These experts are still precious; they usually know what you need. But here’s the problem: most of the time, what you need is predictable.
