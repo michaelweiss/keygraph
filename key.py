@@ -45,11 +45,11 @@ def delNoise(text):
  
 # Divide into sentences
 def creSentence(text):
-    return nltk.tokenize.sent_tokenize(text)
+    return [s.lower() for s in nltk.tokenize.sent_tokenize(text)]
 
 # Divide into tokens
 def create_tokens(text):
-    return nltk.tokenize.word_tokenize(text)
+    return [t.lower() for t in nltk.tokenize.word_tokenize(text)]
 
 #名詞だけを取得してリストにいれる　リストを返す 数字抜き
 def pyMecab(s):
@@ -130,8 +130,13 @@ def pop(dic_p, dic_q):
 
     return list_p
 
+# Strip stopwords and special symbols from text
+def strip_stopwords_and_symbols(text):
+    stopwords = nltk.corpus.stopwords.words('english')
+    symbols = ["'", '"', '`', '.', ',', '-', '!', '?', ':', ';', '(', ')', '&', '0']
+    return [w for w in text if w not in stopwords + symbols]
 
-# Count word frequencies	
+# Count word frequencies
 def freqcount(tokens):
     result = {}
     for t in tokens:
@@ -318,6 +323,8 @@ if __name__ == "__main__":
              
 #	Divide into sentences
     sents = creSentence(nc_text)
+    
+    print(pp(sents))
     
 #	Divide into tokens
     tokens = create_tokens(nc_text) 

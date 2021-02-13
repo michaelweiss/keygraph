@@ -35,7 +35,7 @@ def high_frequency(text):
     fd = nltk.probability.FreqDist(strip_stopwords_and_symbols(text))
     return list(fd.keys())[:30] 
 
-# Strup stopwords and special symbols from text
+# Strip stopwords and special symbols from text
 def strip_stopwords_and_symbols(text):
     stopwords = nltk.corpus.stopwords.words('english')
     symbols = ["'", '"', '`', '.', ',', '-', '!', '?', ':', ';', '(', ')', '&', '0']
