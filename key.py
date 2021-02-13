@@ -1,27 +1,28 @@
-#! python/keygraph/KeyGraph.py
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import sys
-import MeCab
+# import MeCab
 import codecs
-import re, pprint
-import itertools
+# import re 
+import pprint
+# import itertools
 import time
-import unicodedata
+# import unicodedata
 import os 
  
-sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
-sys.stdin = codecs.getreader('utf_8')(sys.stdin)
+# sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
+# sys.stdin = codecs.getreader('utf_8')(sys.stdin)
 
 def pp(obj):
     pp = pprint.PrettyPrinter(indent=4, width=160)
-    str = pp.pformat(obj)
-    return re.sub(r"\\u([0-9a-f]{4})", lambda x: unichr(int("0x"+x.group(1),16)),str)
-
+    s = pp.pformat(obj)
+#    return re.sub(r"\\u([0-9a-f]{4})", lambda x: unichr(int("0x"+x.group(1),16)),str)
+    return s
   
 M = 30
 
-print 'start'
+print("start")
 
 def readFiles():
     f_list = os.listdir('/Users/SS/python/keygraph/txt_files/')
@@ -30,7 +31,7 @@ def readFiles():
         files.append(f.replace(".txt", ""))
 
     for f in files:
-        print f
+        print(f)
 
     return files
 
@@ -58,40 +59,42 @@ def creSentence(text):
 
 #名詞だけを取得してリストにいれる　リストを返す 数字抜き
 def pyMecab(s):
-    tagger = MeCab.Tagger('-Ochasen')
-    node = tagger.parseToNode(s.encode('utf-8'))
-    nouns = []
-    while node:
-#		    めかぶの名詞のidが38から60なんだよね　数字id=48抜き
-        if node.posid >= 38 and node.posid <= 67 and not(node.posid == 49):
-            if isValid(node.surface.decode('utf-8')) == True:
-                nouns.append(node.surface.decode('utf-8'))
-        node = node.next
-    return nouns
+    pass
+#     tagger = MeCab.Tagger('-Ochasen')
+#     node = tagger.parseToNode(s.encode('utf-8'))
+#     nouns = []
+#     while node:
+# #		    めかぶの名詞のidが38から60なんだよね　数字id=48抜き
+#         if node.posid >= 38 and node.posid <= 67 and not(node.posid == 49):
+#             if isValid(node.surface.decode('utf-8')) == True:
+#                 nouns.append(node.surface.decode('utf-8'))
+#         node = node.next
+#     return nouns
 
 
 def isValid(word):
-    alldigit = re.compile(ur"^[0-9]+$")
-    """wordが登録対象の単語のときTrueを返す"""
-# 	    1文字の単語は登録しない
-    if len(word) == 1:
-        return False
-# 	    数字だけの単語は登録しない
-    if alldigit.search(word) != None:
-        return False
-# 	    仮名2文字の単語は登録しない
-    if len(word) == 2 and unicodedata.name(word[0])[0:8] == "HIRAGANA" and unicodedata.name(word[1])[0:8] == "HIRAGANA":
-        return False
-#       仮名、漢字、数字、英字以外の文字を含む単語は登録しない
-    for c in word:
-        if not (unicodedata.name(c)[0:8] == "HIRAGANA" or
-               unicodedata.name(c)[0:8] == "KATAKANA" or
-               unicodedata.name(c)[0:3] == "CJK" or
-               unicodedata.name(c)[0:5] == "DIGIT" 
-#               英語を削除しています　コメントをとれば英語も入ります． 
-              ''' unicodedata.name(c)[0:5] == "LATIN"'''):
-            return False
+#     alldigit = re.compile(ur"^[0-9]+$")
+#     """wordが登録対象の単語のときTrueを返す"""
+# # 	    1文字の単語は登録しない
+#     if len(word) == 1:
+#         return False
+# # 	    数字だけの単語は登録しない
+#     if alldigit.search(word) != None:
+#         return False
+# # 	    仮名2文字の単語は登録しない
+#     if len(word) == 2 and unicodedata.name(word[0])[0:8] == "HIRAGANA" and unicodedata.name(word[1])[0:8] == "HIRAGANA":
+#         return False
+# #       仮名、漢字、数字、英字以外の文字を含む単語は登録しない
+#     for c in word:
+#         if not (unicodedata.name(c)[0:8] == "HIRAGANA" or
+#                unicodedata.name(c)[0:8] == "KATAKANA" or
+#                unicodedata.name(c)[0:3] == "CJK" or
+#                unicodedata.name(c)[0:5] == "DIGIT" 
+# #               英語を削除しています　コメントをとれば英語も入ります． 
+#               ''' unicodedata.name(c)[0:5] == "LATIN"'''):
+#             return False
     return True
+
 #   popで熟語のやつを消すぜー	
 def pop(dic_p, dic_q):
 
@@ -188,7 +191,7 @@ def link(base):
     base_set = flatten(base)
     base_set = set(base_set)
          
-    print list(base_set)
+    print(list(base_set))
     return list(base_set)
      
 #リストの平坦化 
@@ -213,7 +216,7 @@ def key(words, wfs, base, sents):
         for g in base:
             tmp *= (1-(fwg(w,wfs,g,sents)*(1.0)/Fg[g])) 
         key[w] = 1.0-tmp 
-        print 1.0-tmp, w 
+        print(1.0-tmp, w) 
          
     return key		
 
@@ -317,10 +320,10 @@ if __name__ == "__main__":
     argvs = sys.argv
     argc = len(argvs)
     if(argc != 2):
-        print 'Usage: #python %s filename' % argvs[0]
-        quit()
+        print("Usage: #python %s filename" % argvs[0])
+        sys.exit()
          
-    print pp(argvs)
+    print(pp(argvs))
     fname = argvs[1]
     
     
@@ -328,73 +331,9 @@ if __name__ == "__main__":
      
     text = f.read()
     f.close()
-
-#	ノイズの削除
-    nc_text = delNoise(text)
-     
-#	センテンスリストの作成
-    sents = creSentence(nc_text)
-
-#	形態素解析
-    tokens = pyMecab(nc_text) 
-       
-#	単語-出現度の辞書作成	
-    freq_dict = freqcount(tokens)
-    
-    words_freq = sorted(freq_dict.items(), key=lambda x:x[1])
-     
-    words_freq = pop(dict(words_freq), dict(words_freq)) 
-     
-    words = [w for w,z in words_freq]
-     
-#	リスト[words][センテンス番号] = 出現回数のリストwfs
-    wfs = calwfs(words, sents)
-
-#	HighFreqを決める
-    hf = [w for w,f in words_freq[-30:]]
-
-#   HighFreqの共起度を計算する 返り値リスト[wi,wj,co]
-    co = calCo(hf,sents)
-     
-    del words[-30:]
-     
-    base = [[i,j] for i,j,c in co[-30:]]  
-
-        
-    #baseに入っているノードを返す      
-    G_base = link(base)   
-     
-    print G_base 
-    
-#	keyの計算  
-    key = key(words, wfs, G_base, sents)
- 
-#	high_keyの計算
-    high_key = sorted(key.items(), key=lambda x:x[1])
-    high_key = high_key[-12:]
-    
-    high_key = [k for k,f in high_key]
-     
-
-#	c(wi,wj)の計算 [hk, base, スコア]が返り値
-    C = C(high_key, G_base, sents)	
-     
-    C.sort(key=lambda x:x[2])
-     
-    G_C = [[i,j] for i,j,c in C[-12:]]  
-     
-    for i,j in base:
-        print i,j
-    
-    for x,y in G_C:
-        print x,y
-    
-    draw(base, G_C, fname)
-
-    adjacency_dic(base, G_C, fname)
          
     etime = time.time()
  
 
-print etime - stime	
+print(etime - stime)	
 
