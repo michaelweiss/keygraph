@@ -47,6 +47,10 @@ def delNoise(text):
 def creSentence(text):
     return nltk.tokenize.sent_tokenize(text)
 
+# Divide into tokens
+def create_tokens(text):
+    return nltk.tokenize.word_tokenize(text)
+
 #名詞だけを取得してリストにいれる　リストを返す 数字抜き
 def pyMecab(s):
     pass
@@ -316,7 +320,10 @@ if __name__ == "__main__":
 #	Divide into sentences
     sents = creSentence(nc_text)
     
-    print(sents)
+#	Divide into tokens
+    tokens = create_tokens(nc_text) 
+    
+    print(tokens)
 
     etime = time.time()
     print("Execution time: %.4f seconds" % (etime - stime))
