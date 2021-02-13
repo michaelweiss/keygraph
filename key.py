@@ -131,12 +131,11 @@ def pop(dic_p, dic_q):
     return list_p
 
 
-#[語(word):出現回数]の辞書を作る
+# Count word frequencies	
 def freqcount(tokens):
-    result={}
-#   単語の出現でカウント(list内のカウント）
+    result = {}
     for t in tokens:
-        if result.has_key(t):
+        if t in result:
             result[t] += 1
         else:
             result[t] = 1
@@ -323,7 +322,10 @@ if __name__ == "__main__":
 #	Divide into tokens
     tokens = create_tokens(nc_text) 
     
-    print(tokens)
+#	Count word frequencies	
+    freq_dict = freqcount(tokens)
+    
+    print(pp(freq_dict))
 
     etime = time.time()
     print("Execution time: %.4f seconds" % (etime - stime))
