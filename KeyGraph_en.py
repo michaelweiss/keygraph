@@ -89,13 +89,13 @@ def calwfs(words, sents):
     
     return wfs
 
-def key(words, wfs, base, sents): 
+def key(words, wfs, base, sentences): 
 #	keyは辞書型　key = {w:key値}	
     key = {}
     stime = time.time()
      
 #   F(g)の計算 
-    Fg = fg(words,wfs,base,sents)
+    Fg = fg(words, wfs, base, sentences)
     etime = time.time()
     print (str(etime-stime))
     print Fg
@@ -103,7 +103,7 @@ def key(words, wfs, base, sents):
         tmp = 1.0
         tmp_count = 0
         for b in base:
-            tmp *= (1-(fwg(w,wfs,b,sents)*(1.0)/Fg[b])) 
+            tmp *= (1-(fwg(w, wfs, b, sentences)*(1.0)/Fg[b])) 
         key[w] = 1.0-tmp
     return key		
 

@@ -76,11 +76,31 @@ def key(words, wfs, base, sentences):
     # Compute F(g)
     Fg = fg(words, wfs, base, sentences)
     etime = time.time()
-    print(str(etime-stime))
+    print(str(etime - stime))
     print(Fg)
+    for w in words:
+        tmp = 1.0
+        for b in base:
+            tmp *= (1 - (fwg(w, wfs, b, sentences) * (1.0) / Fg[b])) 
+        key[w] = 1.0 - tmp
+    return key
+
+def fwg(w, wfs, b, sentences):
+    pass
     
 def fg(words, wfs, base, sentences):
-    return 0
+    fg = {} 
+    for b in base:
+        fg[b] = 0
+        for s in sentences:
+#            print("sentence =", s)
+            for w in words:
+#                print("b =", b, "w =", w)
+                if b.find(w) >= 0: # w ∈ g
+                    fg[b] += wfs[b][s] - wfs[w][s]
+                else: # w not ∈ g
+                    fg[b] += wfs[b][s] 
+    return fg
 
 #-----------Main----------------
 if __name__ == "__main__":    
@@ -113,7 +133,7 @@ if __name__ == "__main__":
     # Calculate degree of co-occurrence
     co = calculate_co_occurrence(hf, sentences)
     
-    # print(hf)
+    print(hf)
     # print([pair for pair in co if pair[2] > 0])
     
     # Calculate word frequency in sentences
