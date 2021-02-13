@@ -91,44 +91,44 @@ def isValid(word):
 
 #   popで熟語のやつを消すぜー	
 def pop(dic_p, dic_q):
+#     list_p = sorted(dic_p.items(), key=lambda a: a[1])   
+#     list_q = sorted(dic_q.items(), key=lambda a: a[1])
+   
+#     for kq,vq in list_q:
+#         for kp,vp in list_p:
+#             print(kp, vp, kq, vq, "%s.count(%s)" % (kq, kp), kq.count(kp))
+# #			Check if it is included
+#             if(kq.count(kp)>0):
+# #				print kp, di_comb_p[kp], kq, di_idiom_q[kq]
+#                 print(dic_p.get(kp), dic_q.get(kq))
+#                 if(dic_p.get(kp) <= dic_q.get(kq)):
+#                     if kp in dic_p:
+#                         #print kp, kq
+#                         dic_p.pop(kp)
+#                 else:
+#                     if kq in dic_q:
+#                         #print kq, kp
+#                         dic_q.pop(kq)
+#             print(kp, vp, kq, vq, "%s.count(%s)" % (kp, kq), kp.count(kq))
+#             if(kp.count(kq)>0):
+# #				print kp, di_comb_p[kp], kq, di_idiom_q[kq]
+#                 print(dic_p.get(kp), dic_q.get(kq))
+#                 if(dic_p.get(kp) <= dic_q.get(kq)):
+#                     if(dic_p.has_key(kp)):
+#                         #print kp, kq
+#                         dic_p.pop(kp)
+#                 else:
+#                     if(dic_q.has_key(kq)):
+#                         #print kq, kp
+#                         dic_q.pop(kq)
 
-    list_p = dic_p.items()
-    list_p.sort(key=lambda a: a[1])
-    list_q = dic_q.items()
-    list_q.sort(key=lambda a: a[1])
-     
-    for kq,vq in list_q:
-        for kp,vp in list_p:
-#			含むかどうか確認
-            if(kq.count(kp)>0):
-#				print kp, di_comb_p[kp], kq, di_idiom_q[kq]
-                if(dic_p.get(kp) <= dic_q.get(kq)):
-                    if(dic_p.has_key(kp)):
-                        #print kp, kq
-                        dic_p.pop(kp)
-                else:
-                    if(dic_q.has_key(kq)):
-                        #print kq, kp
-                        dic_q.pop(kq)
-            if(kp.count(kq)>0):
-#				print kp, di_comb_p[kp], kq, di_idiom_q[kq]
-                if(dic_p.get(kp) <= dic_q.get(kq)):
-                    if(dic_p.has_key(kp)):
-                        #print kp, kq
-                        dic_p.pop(kp)
-                else:
-                    if(dic_q.has_key(kq)):
-                        #print kq, kp
-                        dic_q.pop(kq)
-                         
-                         
-    list_p = dic_p.items()
-    list_q = dic_q.items()
-    list_idiom = list_p
-    list_idiom.extend(list_q)
-    list_p.sort(key=lambda a: a[1])
-
-    return list_p
+#     list_p = dic_p.items()
+#     list_q = dic_q.items()
+#     list_idiom = list_p
+#     list_idiom.extend(list_q)
+    
+#     return sorted(list_p, key=lambda a: a[1])
+    pass
 
 # Strip stopwords and special symbols from text
 def strip_stopwords_and_symbols(text):
@@ -323,9 +323,7 @@ if __name__ == "__main__":
              
 #	Divide into sentences
     sents = creSentence(nc_text)
-    
-    print(pp(sents))
-    
+        
 #	Divide into tokens
     tokens = create_tokens(nc_text)
     tokens = strip_stopwords_and_symbols(tokens)
@@ -333,8 +331,15 @@ if __name__ == "__main__":
 #	Count word frequencies	
     freq_dict = freqcount(tokens)
     
-    print(pp(freq_dict))
-
+#   Sort words by their frequency (in ascending order)
+    words_freq = sorted(freq_dict.items(), key=lambda x: x[1])
+      
+#	Determine high frequency words
+    hf = [w for w, f in words_freq[-30:]]
+       
+#   Compute unique words
+    words = [w for w, z in words_freq]
+        
     etime = time.time()
     print("Execution time: %.4f seconds" % (etime - stime))
 
