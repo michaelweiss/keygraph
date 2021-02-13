@@ -31,8 +31,21 @@ def create_sentences(text):
 def create_words(text):
     return nltk.tokenize.word_tokenize(text)
 
+# Calulate high-frequency words
+def high_frequency(text):
+    # Define stopwords and special symbols to exclude from the text
+    stopwords = nltk.corpus.stopwords.words('english')
+    symbols = ["'", '"', '`', '.', ',', '-', '!', '?', ':', ';', '(', ')', '&', '0'] 
+
+    fd = nltk.probability.FreqDist(w for w in text if w not in stopwords + symbols)
+    return list(fd.keys())[:30] 
+
 #-----------Main----------------
 if __name__ == "__main__":
+    # Obtain NLTK resources
+    nltk.download('punkt')
+    nltk.download('stopwords')
+    
     # Read event file
     f = open('./txt_files/actions.txt', 'r')
     doc = f.read()
@@ -53,4 +66,10 @@ if __name__ == "__main__":
     # Generate text
     text = nltk.text.Text(words)
     
-    print(text)
+    # Create a set of words
+    words = set(words)
+    
+    # Calculate high-frequency words
+    hf = high_frequency(text)
+    
+    print(hf)
