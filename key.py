@@ -22,7 +22,13 @@ def pp(obj):
   
 M = 30
 
-print("start")
+# Read file name from the console
+def get_file_name():
+    if (len(sys.argv) != 2):
+        print("Usage: #python %s file-name" % sys.argv[0])
+        sys.exit()
+    print(pp(sys.argv))
+    return sys.argv[1]
 
 def readFiles():
     f_list = os.listdir('/Users/SS/python/keygraph/txt_files/')
@@ -316,24 +322,12 @@ def adjacency_dic(base, G_C, fname):
 #-----------Main----------------
 if __name__ == "__main__":
     stime = time.time() 
-#   コンソールからファイル名を読み込む 
-    argvs = sys.argv
-    argc = len(argvs)
-    if(argc != 2):
-        print("Usage: #python %s filename" % argvs[0])
-        sys.exit()
-         
-    print(pp(argvs))
-    fname = argvs[1]
     
-    
-    f = codecs.open('./txt_files/' + argvs[1] + '.txt', 'r', 'utf-8')
-     
+    fname = get_file_name()
+    f = codecs.open('./txt_files/' + fname + '.txt', 'r', 'utf-8')
     text = f.read()
     f.close()
          
     etime = time.time()
- 
-
-print(etime - stime)	
+    print("Execution time: %.4f seconds" % (etime - stime))
 
