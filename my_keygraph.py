@@ -10,6 +10,8 @@ Created on Fri Feb 12 13:20:30 2021
 import nltk
 # from nltk.collocations import *
 
+from re import sub
+
 def delete_noise(text):
     # Read noise file
     # Remove noise
@@ -33,15 +35,22 @@ def create_words(text):
 if __name__ == "__main__":
     # Read event file
     f = open('./txt_files/actions.txt', 'r')
-    raw = f.read()
+    doc = f.read()
         
     # Delete noise
-    del_nraw = delete_noise(raw)
+    doc = delete_noise(doc)
     
     # Divide into sentences
-    sentences = create_sentences(del_nraw) 
+    sentences = create_sentences(doc) 
     
     # Divide into words and punctuation
-    words = create_words(del_nraw)
+    words = create_words(doc)
     
-    print(words)
+    # All lower-case letters
+    words = [w.lower() for w in words]
+    sentences = [s.lower() for s in sentences]
+    
+    # Generate text
+    text = nltk.text.Text(words)
+    
+    print(text)
