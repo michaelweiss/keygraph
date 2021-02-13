@@ -133,7 +133,7 @@ def pop(dic_p, dic_q):
 # Strip stopwords and special symbols from text
 def strip_stopwords_and_symbols(text):
     stopwords = nltk.corpus.stopwords.words('english')
-    symbols = ["'", '"', '`', '.', ',', '-', '!', '?', ':', ';', '(', ')', '&', '0']
+    symbols = ["'", '"', '`', '’', '.', ',', '-', '!', '?', ':', ';', '(', ')', '&', '0']
     return [w for w in text if w not in stopwords + symbols]
 
 # Count word frequencies
@@ -327,7 +327,8 @@ if __name__ == "__main__":
     print(pp(sents))
     
 #	Divide into tokens
-    tokens = create_tokens(nc_text) 
+    tokens = create_tokens(nc_text)
+    tokens = strip_stopwords_and_symbols(tokens)
     
 #	Count word frequencies	
     freq_dict = freqcount(tokens)
