@@ -9,19 +9,21 @@ import pprint
 # import itertools
 import time
 # import unicodedata
-import os 
+# import os 
+import nltk
  
+M = 30
+
 # sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
 # sys.stdin = codecs.getreader('utf_8')(sys.stdin)
 
+# Pretty-print a Python object
 def pp(obj):
     pp = pprint.PrettyPrinter(indent=4, width=160)
     s = pp.pformat(obj)
 #    return re.sub(r"\\u([0-9a-f]{4})", lambda x: unichr(int("0x"+x.group(1),16)),str)
     return s
   
-M = 30
-
 # Read file name from the console
 def get_file_name():
     if (len(sys.argv) != 2):
@@ -30,38 +32,20 @@ def get_file_name():
     print(pp(sys.argv))
     return sys.argv[1]
 
-def readFiles():
-    f_list = os.listdir('/Users/SS/python/keygraph/txt_files/')
-    files = []
-    for f in f_list:
-        files.append(f.replace(".txt", ""))
+# Read document from file
+def read_from_file(file_name):
+    f = codecs.open('./txt_files/' + fname + '.txt', 'r', 'utf-8')
+    doc = f.read()
+    f.close()
+    return doc
 
-    for f in files:
-        print(f)
-
-    return files
-
-
-#ノイズの削除
+# Delete noise
 def delNoise(text):
-#   ノイズファイルの読み込み
-    noise_list=[]
-    for line in codecs.open('./noise/noise.txt', 'r', 'utf-8'):
-        noise_list.append(line[:-1].split("\n"))	
-
-#   ノイズ削除
-    for i in range(len(noise_list)-1):
-        noise =  noise_list[i]
-        text = text.replace(noise[0], u'')
     return text 
  
-#センテンス（文）のlist作成
+# Divide into sentences
 def creSentence(text):
-    s_cha = u'。'
-#	    cat = re.split(ur"", text)
-    sents = []
-    sents = text.strip(s_cha).split(s_cha)
-    return sents
+    return nltk.tokenize.sent_tokenize(text)
 
 #名詞だけを取得してリストにいれる　リストを返す 数字抜き
 def pyMecab(s):
@@ -324,10 +308,16 @@ if __name__ == "__main__":
     stime = time.time() 
     
     fname = get_file_name()
-    f = codecs.open('./txt_files/' + fname + '.txt', 'r', 'utf-8')
-    text = f.read()
-    f.close()
-         
+    doc = read_from_file(fname)
+    
+#	Delete noise
+    nc_text = delNoise(doc)
+             
+#	Divide into sentences
+    sents = creSentence(nc_text)
+    
+    print(sents)
+
     etime = time.time()
     print("Execution time: %.4f seconds" % (etime - stime))
 
