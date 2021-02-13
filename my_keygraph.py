@@ -6,11 +6,8 @@ Created on Fri Feb 12 13:20:30 2021
 @author: mrw
 """
 
-# import sys
 import nltk
 # from nltk.collocations import *
-
-from re import sub
 
 def delete_noise(text):
     # Read noise file
@@ -33,19 +30,38 @@ def create_words(text):
 
 # Calulate high-frequency words
 def high_frequency(text):
-    # Define stopwords and special symbols to exclude from the text
-    stopwords = nltk.corpus.stopwords.words('english')
-    symbols = ["'", '"', '`', '.', ',', '-', '!', '?', ':', ';', '(', ')', '&', '0'] 
-
-    fd = nltk.probability.FreqDist(w for w in text if w not in stopwords + symbols)
+    fd = nltk.probability.FreqDist(strip_stopwords_and_symbols(text))
     return list(fd.keys())[:30] 
 
-#-----------Main----------------
-if __name__ == "__main__":
-    # Obtain NLTK resources
-    nltk.download('punkt')
-    nltk.download('stopwords')
+# Strup stopwords and special symbols from text
+def strip_stopwords_and_symbols(text):
+    stopwords = nltk.corpus.stopwords.words('english')
+    symbols = ["'", '"', '`', '.', ',', '-', '!', '?', ':', ';', '(', ')', '&', '0']
+    return [w for w in text if w not in stopwords + symbols]
+
+# Calculate co-occurrence of frequent words
+def calculate_co_occurrence(hf, sentences):
+    co = {} 
+    for hf1 in hf:
+        co[hf1] = {} # initalize
+        for hf2 in hf[hf.index(hf1)+1:]:
+            co[hf1][hf2] = 0 
+            for s in sentences:
+                # Why sum products, not min, as in Ohsawa (1998)?
+                co[hf1][hf2] += s.count(hf1) * s.count(hf2)
+    co_list = [] 
+    for x in co.keys():
+        for y in co[x].keys():
+            co_list.append([x, y, co[x][y]])
+    co_list.sort(key = lambda a: a[2])
+    return co_list
+
+# Calculate word frequency in sentences
+def calculate_wfs(words, sentences):
+    pass
     
+#-----------Main----------------
+if __name__ == "__main__":    
     # Read event file
     f = open('./txt_files/actions.txt', 'r')
     doc = f.read()
@@ -72,4 +88,11 @@ if __name__ == "__main__":
     # Calculate high-frequency words
     hf = high_frequency(text)
     
-    print(hf)
+    # Calculate degree of co-occurrence
+    co = calculate_co_occurrence(hf, sentences)
+    
+    # print(hf)
+    # print([pair for pair in co if pair[2] > 0])
+    
+    # Calculate word frequency in sentences
+    wfs = calculate_wfs(words, sentences)
