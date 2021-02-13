@@ -81,27 +81,47 @@ def key(words, wfs, base, sentences):
     for w in words:
         tmp = 1.0
         for b in base:
-            tmp *= (1 - (fwg(w, wfs, b, sentences) * (1.0) / Fg[b])) 
+            tmp *= (1 - fwg(w, wfs, b, sentences) * (1.0) / Fg[b]) 
         key[w] = 1.0 - tmp
     return key
 
 def fwg(w, wfs, b, sentences):
-    pass
+    gws = 0
+    fwg = 0
+    for s in sentences:
+        # Calculate |g-w|_s  
+        # Count of cluster g in s: g_s = wfs[g][s]
+        # Word in s: w_s = wfs[w][s]
+        if b.find(w) >= 0: # w ∈ g
+            # |g|_s
+            gws = wfs[b][s] - wfs[w][s]
+        else: # w not ∈ g
+            gws = wfs[b][s]
+        fwg += wfs[w][s] * gws
+    return fwg
     
 def fg(words, wfs, base, sentences):
     fg = {} 
     for b in base:
         fg[b] = 0
         for s in sentences:
-#            print("sentence =", s)
             for w in words:
-#                print("b =", b, "w =", w)
                 if b.find(w) >= 0: # w ∈ g
                     fg[b] += wfs[b][s] - wfs[w][s]
                 else: # w not ∈ g
                     fg[b] += wfs[b][s] 
     return fg
 
+def c(hk, hf, sentences):
+    c = {}
+    for k in hk:
+        c[k] = {}
+        for f in hf:
+            c[k][f] = 0
+            for s in sentences:
+                c[k][f] += s.count(k) * s.count(f)
+    return c
+                
 #-----------Main----------------
 if __name__ == "__main__":    
     # Read event file
@@ -113,7 +133,7 @@ if __name__ == "__main__":
     
     # Divide into sentences
     sentences = create_sentences(doc) 
-    
+     
     # Divide into words and punctuation
     words = create_words(doc)
     
@@ -132,13 +152,25 @@ if __name__ == "__main__":
     
     # Calculate degree of co-occurrence
     co = calculate_co_occurrence(hf, sentences)
-    
-    print(hf)
-    # print([pair for pair in co if pair[2] > 0])
-    
+        
     # Calculate word frequency in sentences
     wfs = calculate_wfs(words, sentences)
     
     # Compute key
     key = key(words, wfs, hf, sentences)
     
+    # Sort document by key
+    high_key = sorted(key.items(), key=lambda x: x[1])
+    
+    print(high_key)
+    
+    # Top keys are the high keys (roofs?)
+    # High keys are highly ranked by the touching columns
+    high_key = dict(high_key[-12:])
+    hk = list(high_key.keys())
+    
+    print(hk)
+    print(hf)
+    
+    c = c(hk, hf, sentences)
+    print(c)	
