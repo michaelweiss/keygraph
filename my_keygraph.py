@@ -7,7 +7,7 @@ Created on Fri Feb 12 13:20:30 2021
 """
 
 import nltk
-# from nltk.collocations import *
+import time
 
 def delete_noise(text):
     # Read noise file
@@ -43,8 +43,8 @@ def strip_stopwords_and_symbols(text):
 def calculate_co_occurrence(hf, sentences):
     co = {} 
     for hf1 in hf:
-        co[hf1] = {} # initalize
-        for hf2 in hf[hf.index(hf1)+1:]:
+        co[hf1] = {}
+        for hf2 in hf[hf.index(hf1) + 1:]:
             co[hf1][hf2] = 0 
             for s in sentences:
                 # Why sum products, not min, as in Ohsawa (1998)?
@@ -58,8 +58,30 @@ def calculate_co_occurrence(hf, sentences):
 
 # Calculate word frequency in sentences
 def calculate_wfs(words, sentences):
-    pass
+    wfs = {} 
+    for w in words:
+        for s in sentences:
+            if w not in wfs:
+                wfs[w] = {}
+            wfs[w][s] = s.count(w)
+    return wfs
     
+# Compute key, the probablity that a word appears in the foundation of G 
+# Why base, not hf?
+def key(words, wfs, base, sentences):
+    # key is a dictionary of the form　key = {w: key value}	
+    key = {}
+    stime = time.time()
+    
+    # Compute F(g)
+    Fg = fg(words, wfs, base, sentences)
+    etime = time.time()
+    print(str(etime-stime))
+    print(Fg)
+    
+def fg(words, wfs, base, sentences):
+    return 0
+
 #-----------Main----------------
 if __name__ == "__main__":    
     # Read event file
@@ -96,3 +118,7 @@ if __name__ == "__main__":
     
     # Calculate word frequency in sentences
     wfs = calculate_wfs(words, sentences)
+    
+    # Compute key
+    key = key(words, wfs, hf, sentences)
+    
