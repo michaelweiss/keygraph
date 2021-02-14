@@ -202,7 +202,7 @@ def key(words, wfs, base, sents):
     for w in words:
         product = 1.0
         for g in base:
-            product *= (1 - fwg(w, wfs, g, sents)*(1.0)/Fg[g]) 
+            product *= 1 - fwg(w, wfs, g, sents)*(1.0)/Fg[g]
         key[w] = 1.0 - product 
         print("key[{}]".format(w), 1.0 - product, w)        
     return key		
@@ -375,7 +375,7 @@ if __name__ == "__main__":
     
 #	Calculate columns c(wi,wj)
     C = C(high_key, G_base, sents)	
-    C.sort(key=lambda x:x[2])
+    C.sort(key=lambda x: x[2])
      
 #   Compute the top links between key terms (red nodes) and clusters
     G_C = [[i, j] for i, j, c in C[-K:]]  
