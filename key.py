@@ -170,7 +170,7 @@ def calCo(hf, sents):
     co_list = [] 
     for x in co.keys():
         for y in co[x].keys():
-            co_list.append([x,y,co[x][y]])    
+            co_list.append([x, y, co[x][y]])    
     co_list.sort(key=lambda a: a[2])
     return co_list 
  
@@ -316,7 +316,7 @@ def adjacency_dic(base, G_C, fname):
             a_dic[j] = [[i,'key']] 
 
     fout = codecs.open("./adjacency_list/" + fname + ".txt","w","utf-8")
-    fout.write(pp(a_dic.items()))
+    fout.write(pp(a_dic))
     fout.close()
         
 #-----------Main----------------
