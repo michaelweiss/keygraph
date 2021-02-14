@@ -192,48 +192,55 @@ def flatten(x, isflat=lambda x:not isinstance(x, list)):
             for i in flatten(item, isflat):
                 yield i
                             
-#key値の計算
+# Compute key (terms that tie and hold clusters together) 
 def key(words, wfs, base, sents):
-#	keyは辞書型　key = {w:key値}	
-    key = {}
-     
+    # key is a dictionary of the form　key = {w: key value}	
+    key = {}   
     Fg = fg(words, wfs, base, sents)
-
+    # print("Fg", Fg)
     for w in words:
-        tmp = 1.0
-        tmp_count = 0
+        product = 1.0
         for g in base:
-            tmp *= (1-(fwg(w,wfs,g,sents)*(1.0)/Fg[g])) 
-        key[w] = 1.0-tmp 
-        print(1.0-tmp, w) 
-         
+            product *= (1 - fwg(w, wfs, g, sents)*(1.0)/Fg[g]) 
+        key[w] = 1.0 - product 
+        print("key[{}]".format(w), 1.0 - product, w)        
     return key		
 
-#f(w,g)計算
-def fwg(w,wfs,g,sents):	
+# Calculate f(w,g)
+# Based(w, g) = how many times w appeared in D, based on the basic
+# concept represented by g
+def fwg(w, wfs, g, sents):	
     gws = 0
     fwg = 0
     for s in sents:
-#		|g-w|sの計算  gs = wfs[g][s] ws = ws[w][s]
-        if g.find(w) >= 0:# w ∈ g
-#			|g|sの計算
+        # Calculate |g-w|_s
+        # Count of cluster g in s: g_s = wfs[g][s]
+        # Word in s: w_s = wfs[w][s]
+        if g.find(w) >= 0: # w ∈ g
             gws = wfs[g][s] - wfs[w][s]
-        else:# w not ∈ g
+        else: # w not ∈ g
             gws = wfs[g][s]
-        fwg += wfs[w][s]*gws
+        fwg += wfs[w][s] * gws
     return fwg
 
-#F(g)の計算
+# Calculate F(g)
+# Neighbors(g) = count of terms in sentences including terms in cluster g
+# g_s = count of cluster g in sentence s
+# w_s = count of word w in sentence s (ie wfs[w][s])
 def fg(words, wfs, base, sents):
     fg = {}
     for g in base:
         fg[g] = 0
         for s in sents:
+#            print("s", s)
             for w in words:
                 if s.find(w) >= 0:
-                    if g.find(w) >= 0:# w ∈ g
+#                    print("w", w)
+                    if g.find(w) >= 0: # w ∈ g
+#                        print("|g-w|", g, wfs[g][s], w, wfs[w][s])
                         fg[g] += wfs[g][s] - wfs[w][s]
-                    else:# w not ∈ g
+                    else: # w not ∈ g
+#                        print("|g|", g, wfs[g][s])
                         fg[g] += wfs[g][s] 
     return fg
 
@@ -264,13 +271,14 @@ def draw(base, G_C,fname):
     fout.write('graph keygraph {\n')
     fout.write('graph [size="10,10"]\n')
     for i, j in base:
-       fout.write(escape(i) + '--' + escape(j) +'\n')
+       fout.write(quote(i) + '--' + quote(j) +'\n')
     for i, j in G_C:
-       fout.write(escape(i) + '--' + escape(j) + '[style="dotted"]\n')
+       fout.write(quote(i) + '--' + quote(j) + '[style="dotted"]\n')
     fout.write('}')
     fout.close()
     
-def escape(name):
+# Add optional quotes around a name
+def quote(name):
     if "-" in name or "/" in name:
         return "\"{}\"".format(name)
     return name
@@ -344,17 +352,25 @@ if __name__ == "__main__":
 
 #   Extract nodes in the base
     G_base = words[-30:]
-
+    
 #   Remove high frequency words from, leaving non-high frequency words
     del words[-30:]
     
 #   Compute the base of G (links between black nodes)
     base = [[i, j] for i, j, c in co[-30:]]  
     
-#    print(pp(base))
-         
-    print(G_base) 
+#   Compute key (terms that tie and hold clusters together) 
+    key = key(words, wfs, G_base, sents)
 
+#   Sort terms in D by keys (produces list of terms ranked by their
+#   association with the cluster)
+    high_key = sorted(key.items(), key=lambda x: x[1])
+    high_key = high_key[-12:]
+    
+    high_key = [k for k, f in high_key]
+    
+    print(high_key)   
+    
     draw(base, [], fname)
     
     etime = time.time()

@@ -68,8 +68,7 @@ def calculate_wfs(words, sentences):
             wfs[w][s] = s.count(w)
     return wfs
     
-# Compute key, the probablity that a word appears in the foundation of G 
-# Why base, not hf?
+# Compute key (terms that tie and hold clusters together) 
 def key(words, wfs, base, sentences):
     # key is a dictionary of the form　key = {w: key value}	
     key = {}
@@ -81,10 +80,10 @@ def key(words, wfs, base, sentences):
     print(str(etime - stime))
     print(Fg)
     for w in words:
-        tmp = 1.0
+        product = 1.0
         for b in base:
-            tmp *= (1 - fwg(w, wfs, b, sentences) * (1.0) / Fg[b]) 
-        key[w] = 1.0 - tmp
+            product *= (1 - fwg(w, wfs, b, sentences) * (1.0) / Fg[b]) 
+        key[w] = 1.0 - product
     return key
 
 def fwg(w, wfs, b, sentences):
