@@ -133,7 +133,7 @@ def pop(dic_p, dic_q):
 # Strip stopwords and special symbols from text
 def strip_stopwords_and_symbols(text):
     stopwords = nltk.corpus.stopwords.words('english')
-    symbols = ["'", '"', '`', '’', '.', ',', '-', '!', '?', ':', ';', '(', ')', '&', '0']
+    symbols = ["'", '"', '`', '’', '.', ',', '-', '!', '?', ':', ';', '(', ')', '&', '0', '%']
     return [w for w in text if w not in stopwords + symbols]
 
 # Count word frequencies
@@ -146,45 +146,35 @@ def freqcount(tokens):
             result[t] = 1
     return result	
  
-#リスト['word']['sentence　インデックス']=出現回数　を返す関数
+#	Calculate word frequency in sentences
 def calwfs(words, sents):
     wfs = {} 
     for w in words:
         for s in sents:
-            if w in wfs:
-                wfs[w][s] = s.count(w)
-            else:
+            if w not in wfs:
                 wfs[w] = {}
-                wfs[w][s] = s.count(w) 
-
-#	for w,n in words:
-#		for s in range(len(sents)):
-#			print wfs[w][s]	
-
+            wfs[w][s] = s.count(w)
     return wfs	
  
-#共起度coを計算する
-def calCo(hf,sents):
+#   Calculate co-occurrence degree of high-frequency words
+def calCo(hf, sents):
     co = {} 
     for hf1 in hf:
-        co[hf1] = {} #初期化
-        for hf2  in hf[hf.index(hf1)+1:]:
-            co[hf1][hf2] = 0 #初期化だよ 
+        co[hf1] = {}
+        for hf2 in hf[hf.index(hf1)+1:]:
+            co[hf1][hf2] = 0 
             for s in sents:
+                # Why sum products, not min, as in Ohsawa (1998)?
                 co[hf1][hf2] += s.count(hf1) * s.count(hf2)
-                 
-#	listにしています	
     co_list = [] 
     for x in co.keys():
         for y in co[x].keys():
-            co_list.append([x,y,co[x][y]])
-    
+            co_list.append([x,y,co[x][y]])    
     co_list.sort(key=lambda a: a[2])
-
     return co_list 
  
- 
 #linkを張る
+# Not needed: can extract base from words[-30:]
 def link(base):
     base_set = flatten(base)
     base_set = set(base_set)
@@ -193,6 +183,7 @@ def link(base):
     return list(base_set)
      
 #リストの平坦化 
+# Not needed: can extract base from words[-30:]
 def flatten(x, isflat=lambda x:not isinstance(x, list)):
     if isflat(x):
         yield x
@@ -271,12 +262,11 @@ def draw(base, G_C,fname):
     fout = codecs.open("./dot/" + fname + ".dot","w","utf-8")
     fout.write('graph keygraph {\n')
     fout.write('graph [size="10,10"]\n')
-    for i,j in base:
+    for i, j in base:
        fout.write(i + '--' + j +'\n')
-    for i,j in G_C:
+    for i, j in G_C:
        fout.write(i + '--' + j + '[style="dotted"]\n')
     fout.write('}')
-     
     fout.close()
 
 #隣接リストを作ったけど微妙だね． 
@@ -333,13 +323,34 @@ if __name__ == "__main__":
     
 #   Sort words by their frequency (in ascending order)
     words_freq = sorted(freq_dict.items(), key=lambda x: x[1])
-      
-#	Determine high frequency words
-    hf = [w for w, f in words_freq[-30:]]
-       
+
 #   Compute unique words
     words = [w for w, z in words_freq]
-        
+      
+#	Calculate word frequency in sentences
+    wfs = calwfs(words, sents)
+    
+#	Determine high frequency words
+    hf = [w for w, f in words_freq[-30:]]
+               
+#   Calculate co-occurrence degree of high-frequency words
+    co = calCo(hf, sents)
+
+#   Extract nodes in the base
+    G_base = words[-30:])
+
+#   Remove high frequency words from, leaving non-high frequency words
+    del words[-30:]
+    
+#   Compute the base of G (links between black nodes)
+    base = [[i, j] for i, j, c in co[-30:]]  
+    
+#    print(pp(base))
+         
+    print(G_base) 
+
+    draw(base, [], fname)
+    
     etime = time.time()
     print("Execution time: %.4f seconds" % (etime - stime))
 
