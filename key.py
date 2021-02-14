@@ -256,19 +256,32 @@ def C(hk, base, sents):
     c_list = [] 
     for x in c.keys():
         for y in c[x].keys():
-            c_list.append([x,y,c[x][y]])
+            c_list.append([x, y, c[x][y]])
     c_list.sort(key=lambda a: a[2])
     return c_list 
   
 # Draw keygraph in dot format
-def draw(base, G_C,fname):
+def draw(base, G_C, fname):
     fout = codecs.open("./dot/" + fname + ".dot","w","utf-8")
     fout.write('graph keygraph {\n')
     fout.write('graph [size="10,10"]\n')
+
+    g = []
     for i, j in base:
-       fout.write(quote(i) + '--' + quote(j) +'\n')
+        g.append(i)
+        g.append(j)
+    for i in set(g):
+        fout.write(quote(i) + ' [color="black"]\n')
+    k = []
     for i, j in G_C:
-       fout.write(quote(i) + '--' + quote(j) + '[style="dotted"]\n')
+        k.append(i)
+    for i in set(k):
+        fout.write(quote(i) + ' [color="red"]\n')
+        
+    for i, j in base:
+        fout.write(quote(i) + '--' + quote(j) +'\n')
+    for i, j in G_C:
+        fout.write(quote(i) + '--' + quote(j) + ' [color="red", style="dotted"]\n')
     fout.write('}')
     fout.close()
     
@@ -302,13 +315,9 @@ def adjacency_dic(base, G_C, fname):
         else:
             a_dic[j] = [[i,'key']] 
 
-
     fout = codecs.open("./adjacency_list/" + fname + ".txt","w","utf-8")
     fout.write(pp(a_dic.items()))
     fout.close()
-
-         
-         
         
 #-----------Main----------------
 if __name__ == "__main__":
@@ -366,10 +375,17 @@ if __name__ == "__main__":
     
 #	Calculate columns c(wi,wj)
     C = C(high_key, G_base, sents)	
+    C.sort(key=lambda x:x[2])
+     
+#   Compute the top links between key terms (red nodes) and clusters
+    G_C = [[i, j] for i, j, c in C[-K:]]  
     
-    print(pp(C))
-    
-    draw(base, [], fname)
+    # for i, j in base:
+    #     print(i, j)
+    # for x, y in G_C:
+    #     print(x, y)
+
+    draw(base, G_C, fname)
     
     etime = time.time()
     print("Execution time: %.4f seconds" % (etime - stime))

@@ -1,5 +1,25 @@
 graph keygraph {
 graph [size="10,10"]
+make [color="black"]
+recommendations [color="black"]
+exploitation [color="black"]
+need [color="black"]
+time [color="black"]
+people [color="black"]
+change [color="black"]
+customer [color="black"]
+balance [color="black"]
+"a/b/n" [color="black"]
+thing [color="black"]
+"n-armed" [color="black"]
+exploration [color="black"]
+bandits [color="black"]
+tests [color="black"]
+employees [color="black"]
+recommend [color="red"]
+bandit [color="red"]
+test [color="red"]
+use [color="red"]
 balance--bandits
 balance--"n-armed"
 employees--make
@@ -30,4 +50,16 @@ tests--"n-armed"
 "a/b/n"--bandits
 "a/b/n"--"n-armed"
 bandits--"n-armed"
+recommend--recommendations [color="red", style="dotted"]
+use--"a/b/n" [color="red", style="dotted"]
+bandit--exploitation [color="red", style="dotted"]
+bandit--exploration [color="red", style="dotted"]
+test--tests [color="red", style="dotted"]
+test--bandits [color="red", style="dotted"]
+test--"n-armed" [color="red", style="dotted"]
+bandit--tests [color="red", style="dotted"]
+bandit--"a/b/n" [color="red", style="dotted"]
+test--"a/b/n" [color="red", style="dotted"]
+bandit--bandits [color="red", style="dotted"]
+bandit--"n-armed" [color="red", style="dotted"]
 }
