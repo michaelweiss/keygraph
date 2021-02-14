@@ -258,16 +258,22 @@ def C(hk, base, sents):
 
     return c_list 
   
+# Draw keygraph in dot format
 def draw(base, G_C,fname):
     fout = codecs.open("./dot/" + fname + ".dot","w","utf-8")
     fout.write('graph keygraph {\n')
     fout.write('graph [size="10,10"]\n')
     for i, j in base:
-       fout.write(i + '--' + j +'\n')
+       fout.write(escape(i) + '--' + escape(j) +'\n')
     for i, j in G_C:
-       fout.write(i + '--' + j + '[style="dotted"]\n')
+       fout.write(escape(i) + '--' + escape(j) + '[style="dotted"]\n')
     fout.write('}')
     fout.close()
+    
+def escape(name):
+    if "-" in name or "/" in name:
+        return "\"{}\"".format(name)
+    return name
 
 #隣接リストを作ったけど微妙だね． 
 def adjacency_dic(base, G_C, fname):
@@ -337,7 +343,7 @@ if __name__ == "__main__":
     co = calCo(hf, sents)
 
 #   Extract nodes in the base
-    G_base = words[-30:])
+    G_base = words[-30:]
 
 #   Remove high frequency words from, leaving non-high frequency words
     del words[-30:]
