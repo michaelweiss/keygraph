@@ -291,26 +291,26 @@ def quote(name):
         return "\"{}\"".format(name)
     return name
 
-#隣接リストを作ったけど微妙だね． 
+# Create an adjacency list 
 def adjacency_dic(base, G_C, fname):
     a_dic = {}
      
     for i,j in base:
-        if a_dic.has_key(i):
+        if i in a_dic:
             a_dic[i].append([j,'base'])
         else:
             a_dic[i] = [[j,'base']] 
-        if a_dic.has_key(j):
+        if j in a_dic:
             a_dic[j].append([i,'base'])
         else:
             a_dic[j] = [[i,'base']] 
     
-    for i,j in G_C:
-        if a_dic.has_key(i):
+    for i, j in G_C:
+        if i in a_dic:
             a_dic[i].append([j,'key'])
         else:
             a_dic[i] = [[j,'key']] 
-        if a_dic.has_key(j):
+        if j in a_dic:
             a_dic[j].append([i,'key'])
         else:
             a_dic[j] = [[i,'key']] 
@@ -386,6 +386,8 @@ if __name__ == "__main__":
     #     print(x, y)
 
     draw(base, G_C, fname)
+
+    adjacency_dic(base, G_C, fname)
     
     etime = time.time()
     print("Execution time: %.4f seconds" % (etime - stime))
