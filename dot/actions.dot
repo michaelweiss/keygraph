@@ -1,65 +1,67 @@
 graph keygraph {
 graph [size="10,10"]
-"a/b/n" [color="black"]
 people [color="black"]
-time [color="black"]
-change [color="black"]
-employees [color="black"]
-thing [color="black"]
-exploitation [color="black"]
-make [color="black"]
-exploration [color="black"]
-balance [color="black"]
-need [color="black"]
 "n-armed" [color="black"]
+thing [color="black"]
+store [color="black"]
+many [color="black"]
+test [color="black"]
+exploration [color="black"]
+time [color="black"]
+make [color="black"]
+change [color="black"]
+"a/b/n" [color="black"]
+need [color="black"]
+bandit [color="black"]
+reason [color="black"]
+exploitation [color="black"]
+recommendation [color="black"]
+employee [color="black"]
 customer [color="black"]
-recommendations [color="black"]
-bandits [color="black"]
-tests [color="black"]
-use [color="red"]
-bandit [color="red"]
 recommend [color="red"]
-test [color="red"]
-balance--bandits
-balance--"n-armed"
-employees--make
-employees--recommendations
-make--recommendations
-tests--exploration
-tests--time
-tests--customer
+use [color="red"]
+open [color="red"]
+la [color="red"]
+reason--bandit
+employee--make
+employee--recommendation
+make--recommendation
+many--store
 "a/b/n"--exploration
 "a/b/n"--time
 "a/b/n"--customer
+test--exploration
+test--time
+test--customer
 people--change
 exploration--time
 need--time
-time--bandits
 time--"n-armed"
-customer--bandits
+time--bandit
 customer--"n-armed"
-thing--change
-exploitation--bandits
+customer--bandit
 exploitation--"n-armed"
-exploration--bandits
+exploitation--bandit
+thing--change
 exploration--"n-armed"
+exploration--bandit
 time--customer
-tests--"a/b/n"
-tests--bandits
-tests--"n-armed"
-"a/b/n"--bandits
 "a/b/n"--"n-armed"
-bandits--"n-armed"
-recommend--recommendations [color="red", style="dotted"]
+"a/b/n"--bandit
+test--"n-armed"
+test--bandit
+"a/b/n"--test
+"n-armed"--bandit
+la--customer [color="red", style="dotted"]
+recommend--employee [color="red", style="dotted"]
+recommend--make [color="red", style="dotted"]
+use--"n-armed" [color="red", style="dotted"]
+use--bandit [color="red", style="dotted"]
+open--others [color="red", style="dotted"]
 use--"a/b/n" [color="red", style="dotted"]
-bandit--exploitation [color="red", style="dotted"]
-bandit--exploration [color="red", style="dotted"]
-test--tests [color="red", style="dotted"]
-test--bandits [color="red", style="dotted"]
-test--"n-armed" [color="red", style="dotted"]
-bandit--tests [color="red", style="dotted"]
-bandit--"a/b/n" [color="red", style="dotted"]
-test--"a/b/n" [color="red", style="dotted"]
-bandit--bandits [color="red", style="dotted"]
-bandit--"n-armed" [color="red", style="dotted"]
+use--test [color="red", style="dotted"]
+la--"n-armed" [color="red", style="dotted"]
+la--bandit [color="red", style="dotted"]
+recommend--recommendation [color="red", style="dotted"]
+la--thing [color="red", style="dotted"]
 }

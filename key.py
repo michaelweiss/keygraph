@@ -131,12 +131,25 @@ def pop(dic_p, dic_q):
 #     return sorted(list_p, key=lambda a: a[1])
     pass
 
-# Strip stopwords and special symbols from text
-def strip_stopwords_and_symbols(text):
+# Strip stopwords and special symbols from list of words
+def strip_stopwords_and_symbols(tokens):
     stopwords = nltk.corpus.stopwords.words('english')
     symbols = ["'", '"', '`', '’', '.', ',', '-', '!', '?', ':', ';', '(', ')', '&', '0', '%']
-    return [w for w in text if w not in stopwords + symbols]
+    return [w for w in tokens if w not in stopwords + symbols]
 
+# Lemmatize words
+def lemmatize(tokens):
+    lemmatizer = nltk.stem.WordNetLemmatizer()
+    return [lemmatizer.lemmatize(w) for w in tokens]
+
+# Lemmatize words in sentences
+def lemmatize_tokens_in_sentences(sentences):
+    lemmatized_sentences = []
+    for s in sentences:
+        tokens = lemmatize(create_tokens(s))
+        lemmatized_sentences.append(" ".join(tokens))
+    return lemmatized_sentences
+    
 # Count word frequencies
 def freqcount(tokens):
     result = {}
@@ -331,10 +344,12 @@ if __name__ == "__main__":
              
 #	Divide into sentences
     sents = creSentence(nc_text)
+    sents = lemmatize_tokens_in_sentences(sents)
         
 #	Divide into tokens
     tokens = create_tokens(nc_text)
     tokens = strip_stopwords_and_symbols(tokens)
+    tokens = lemmatize(tokens)
     
 #	Count word frequencies	
     freq_dict = freqcount(tokens)

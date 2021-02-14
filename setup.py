@@ -12,6 +12,7 @@ def setup():
     # Obtain NLTK resources
     nltk.download('punkt')
     nltk.download('stopwords')
+    nltk.download('wordnet')
 
 #-----------Main----------------
 if __name__ == "__main__":
