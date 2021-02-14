@@ -13,6 +13,7 @@ import time
 import nltk
  
 M = 30
+K = 12
 
 # sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
 # sys.stdin = codecs.getreader('utf_8')(sys.stdin)
@@ -174,7 +175,7 @@ def calCo(hf, sents):
     return co_list 
  
 #linkを張る
-# Not needed: can extract base from words[-30:]
+# Not needed: can extract base from words[-M:]
 def link(base):
     base_set = flatten(base)
     base_set = set(base_set)
@@ -183,7 +184,7 @@ def link(base):
     return list(base_set)
      
 #リストの平坦化 
-# Not needed: can extract base from words[-30:]
+# Not needed: can extract base from words[-M:]
 def flatten(x, isflat=lambda x:not isinstance(x, list)):
     if isflat(x):
         yield x
@@ -244,7 +245,6 @@ def fg(words, wfs, base, sents):
                         fg[g] += wfs[g][s] 
     return fg
 
-
 def C(hk, base, sents):
     c = {}
     for k in hk:
@@ -252,17 +252,12 @@ def C(hk, base, sents):
         for b in base:
             c[k][b] = 0
             for s in sents:
-                    c[k][b] += s.count(k) * s.count(b)
-    
-          
-#	listにしています	
+                c[k][b] += s.count(k) * s.count(b)
     c_list = [] 
     for x in c.keys():
         for y in c[x].keys():
             c_list.append([x,y,c[x][y]])
-    
     c_list.sort(key=lambda a: a[2])
-
     return c_list 
   
 # Draw keygraph in dot format
@@ -345,19 +340,19 @@ if __name__ == "__main__":
     wfs = calwfs(words, sents)
     
 #	Determine high frequency words
-    hf = [w for w, f in words_freq[-30:]]
+    hf = [w for w, f in words_freq[-M:]]
                
 #   Calculate co-occurrence degree of high-frequency words
     co = calCo(hf, sents)
 
 #   Extract nodes in the base
-    G_base = words[-30:]
+    G_base = words[-M:]
     
 #   Remove high frequency words from, leaving non-high frequency words
-    del words[-30:]
+    del words[-M:]
     
 #   Compute the base of G (links between black nodes)
-    base = [[i, j] for i, j, c in co[-30:]]  
+    base = [[i, j] for i, j, c in co[-M:]]  
     
 #   Compute key (terms that tie and hold clusters together) 
     key = key(words, wfs, G_base, sents)
@@ -365,11 +360,14 @@ if __name__ == "__main__":
 #   Sort terms in D by keys (produces list of terms ranked by their
 #   association with the cluster)
     high_key = sorted(key.items(), key=lambda x: x[1])
-    high_key = high_key[-12:]
+    high_key = high_key[-K:]
     
     high_key = [k for k, f in high_key]
     
-    print(high_key)   
+#	Calculate columns c(wi,wj)
+    C = C(high_key, G_base, sents)	
+    
+    print(pp(C))
     
     draw(base, [], fname)
     
