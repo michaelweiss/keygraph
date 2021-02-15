@@ -215,31 +215,32 @@ def key(words, wfs, base, sents):
     # key is a dictionary of the form　key = {w: key value}	
     key = {}   
     Fg = fg(words, wfs, base, sents)
-
-    print(pp(Fg))
-    sys.exit()
-    
     for w in words:
         product = 1.0
         for g in base:
             product *= 1 - fwg(w, wfs, g, sents)*(1.0)/Fg[g]
+#        print("product", product)
         key[w] = 1.0 - product 
         print("key[{}]".format(w), 1.0 - product, w)        
     return key		
 
 # Calculate f(w,g)
 # Based(w, g) = how many times w appeared in D, based on the basic
-# concept represented by g
+# concept represented by term g
 def fwg(w, wfs, g, sents):	
     gws = 0
     fwg = 0
-    for s in sents:
+#    print("w", w, "g", g)
+    for s, sentence in enumerate(sents):
+#        print("sentence", sentence)
         # Calculate |g-w|_s
-        # Count of cluster g in s: g_s = wfs[g][s]
+        # Count of cluster term g in s: g_s = wfs[g][s]
         # Word in s: w_s = wfs[w][s]
-        if g.find(w) >= 0: # w ∈ g
+        if w == g: # w ∈ g
+#            print("|g-w|", g, wfs[g][s], w, wfs[w][s])
             gws = wfs[g][s] - wfs[w][s]
         else: # w not ∈ g
+#            print("|g|", g, wfs[g][s])
             gws = wfs[g][s]
         fwg += wfs[w][s] * gws
     return fwg

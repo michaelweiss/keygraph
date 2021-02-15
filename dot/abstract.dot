@@ -1,36 +1,41 @@
 graph keygraph {
 graph [size="10,10"]
-action [color="black"]
-cluster [color="black"]
-player [color="black"]
 visualization [color="black"]
-approach [color="black"]
-proposed [color="black"]
+players [color="black"]
+action [color="black"]
 cmds [color="black"]
-technique [color="black"]
-behavior [color="black"]
-u [color="red"]
+proposed [color="black"]
+behaviors [color="black"]
+keygraph [color="black"]
+approach [color="black"]
+interest [color="red"]
 propose [color="red"]
-action--behavior
-action--player
-behavior--player
-proposed--technique
+analyzing [color="red"]
+proposed--approach
+keygraph--visualization
+keygraph--approach
+keygraph--players
+keygraph--cmds
+visualization--players
+visualization--cmds
+approach--players
+approach--cmds
+players--cmds
+action--behaviors
+action--players
+behaviors--players
 proposed--cmds
-technique--cmds
-cluster--player
-visualization--player
-approach--player
 visualization--approach
+interest--behaviors [color="red", style="dotted"]
+interest--keygraph [color="red", style="dotted"]
+propose--visualization [color="red", style="dotted"]
+propose--players [color="red", style="dotted"]
+propose--action [color="red", style="dotted"]
+propose--behaviors [color="red", style="dotted"]
 propose--approach [color="red", style="dotted"]
-propose--cmds [color="red", style="dotted"]
-u--action [color="red", style="dotted"]
-u--behavior [color="red", style="dotted"]
-u--cluster [color="red", style="dotted"]
-u--keygraph [color="red", style="dotted"]
-u--player [color="red", style="dotted"]
-u--visualization [color="red", style="dotted"]
-u--approach [color="red", style="dotted"]
-u--proposed [color="red", style="dotted"]
-u--technique [color="red", style="dotted"]
-u--cmds [color="red", style="dotted"]
+analyzing--visualization [color="red", style="dotted"]
+analyzing--players [color="red", style="dotted"]
+analyzing--action [color="red", style="dotted"]
+analyzing--behaviors [color="red", style="dotted"]
+analyzing--approach [color="red", style="dotted"]
 }
