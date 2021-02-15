@@ -252,17 +252,14 @@ def fg(words, wfs, base, sents):
     fg = {}
     for g in base:
         fg[g] = 0
-        for s in sents:
-#            print("s", s)
-            for w in words:
-                if s.find(w) >= 0:
-#                    print("w", w)
-                    if g.find(w) >= 0: # w ∈ g
-#                        print("|g-w|", g, wfs[g][s], w, wfs[w][s])
-                        fg[g] += wfs[g][s] - wfs[w][s]
-                    else: # w not ∈ g
-#                        print("|g|", g, wfs[g][s])
-                        fg[g] += wfs[g][s] 
+        for s, sentence in enumerate(sents):
+            for w in sentence:
+                if w == g: # w ∈ g
+#                    print("|g-w|", g, wfs[g][s], w, wfs[w][s])
+                    fg[g] += wfs[g][s] - wfs[w][s]
+                else: # w not ∈ g
+#                    print("|g|", g, wfs[g][s])
+                    fg[g] += wfs[g][s] 
     return fg
 
 def C(hk, base, sents):
@@ -392,8 +389,6 @@ if __name__ == "__main__":
     print(pp(co))
     print(pp(G_base))
     
-    sys.exit()
-
 #   Compute key (terms that tie and hold clusters together) 
     key = key(words, wfs, G_base, sents)
 
@@ -405,7 +400,7 @@ if __name__ == "__main__":
     high_key = [k for k, f in high_key]
     
 #	Calculate columns c(wi,wj)
-    C = C(high_key, G_base, sents)	
+    C = C(high_key, G_base, sents)
     C.sort(key=lambda x: x[2])
      
 #   Compute the top links between key terms (red nodes) and clusters
