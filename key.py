@@ -135,11 +135,21 @@ def pop(dic_p, dic_q):
 #     return sorted(list_p, key=lambda a: a[1])
     pass
 
+# Read user-defined stopwords
+def read_user_defined_stopwords():
+    stopwords = []
+    for line in codecs.open('./noise/stopwords.txt', 'r', 'utf-8'):
+        stopwords.append(line.strip())
+    return stopwords
+
+user_defined_stopwords = read_user_defined_stopwords()
+
 # Strip stopwords and special symbols from list of words
 def strip_stopwords_and_symbols(tokens):
     stopwords = nltk.corpus.stopwords.words('english')
-    symbols = ["'", '"', '“', '”', '`', '’', '.', ',', '-', '!', '?', ':', ';', '(', ')', '[', ']', '&', '0', '%']
-    return [w for w in tokens if w not in stopwords + symbols]
+    symbols = ["'", '"', '“', '”', '`', '’', '.', ',', '-', '!', '?', ':', ';', '(', ')', '[', ']', '&', '0', '%', '...']
+    return [w for w in tokens 
+            if w not in stopwords + user_defined_stopwords + symbols]
 
 # Lemmatize words
 def lemmatize(tokens):
