@@ -168,10 +168,10 @@ def freqcount(tokens):
 def calwfs(words, sents):
     wfs = {} 
     for w in words:
-        for s, sentence in enumerate(sents):
+        for s_idx, s in enumerate(sents):
             if w not in wfs:
                 wfs[w] = {}
-            wfs[w][s] = sentence.count(w)
+            wfs[w][s_idx] = s.count(w)
     return wfs	
  
 #   Calculate co-occurrence degree of high-frequency words
@@ -370,17 +370,17 @@ if __name__ == "__main__":
           
 #	Calculate word frequency in sentences
     wfs = calwfs(words, sents)
-    
-    print(pp(wfs))
-        
-    sys.exit()
-    
+            
 #	Determine high frequency words
     hf = [w for w, f in words_freq[-M:]]
                
 #   Calculate co-occurrence degree of high-frequency words
     co = calCo(hf, sents)
 
+    print(pp(co))
+    
+    sys.exit()
+    
 #   Extract nodes in the base
     G_base = words[-M:]
     
