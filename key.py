@@ -168,10 +168,10 @@ def freqcount(tokens):
 def calwfs(words, sents):
     wfs = {} 
     for w in words:
-        for s in sents:
+        for s, sentence in enumerate(sents):
             if w not in wfs:
                 wfs[w] = {}
-            wfs[w][s] = s.count(w)
+            wfs[w][s] = sentence.count(w)
     return wfs	
  
 #   Calculate co-occurrence degree of high-frequency words
@@ -347,23 +347,18 @@ if __name__ == "__main__":
     nc_text = delNoise(doc)
              
 #	Divide into sentences
-#    sents = creSentence(nc_text)
-#    sents = lemmatize_tokens_in_sentences(sents)
-        
     sents = create_sentences(nc_text)
     sents = [strip_stopwords_and_symbols(s) for s in sents]
-    
+#    sents = creSentence(nc_text)
+#    sents = lemmatize_tokens_in_sentences(sents)
+            
     print(pp(sents))
     
 #	Divide into tokens
     tokens = create_tokens(nc_text)
     tokens = strip_stopwords_and_symbols(tokens)
 #    tokens = lemmatize(tokens)
-
-    print(pp(tokens))
-    
-    sys.exit()
-    
+        
 #	Count word frequencies	
     freq_dict = freqcount(tokens)
     
@@ -372,12 +367,14 @@ if __name__ == "__main__":
 
 #   Compute unique words
     words = [w for w, z in words_freq]
-      
+          
 #	Calculate word frequency in sentences
     wfs = calwfs(words, sents)
     
     print(pp(wfs))
         
+    sys.exit()
+    
 #	Determine high frequency words
     hf = [w for w, f in words_freq[-M:]]
                
