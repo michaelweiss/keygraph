@@ -10,7 +10,7 @@ import nltk
 
 def test():
     lemmatizer = nltk.stem.WordNetLemmatizer()
-    for w in ["last", "las"]:
+    for w in ["last", "las", "us"]:
         print(w, lemmatizer.lemmatize(w))
         
 #-----------Main----------------

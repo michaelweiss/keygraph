@@ -12,7 +12,7 @@ import time
 # import os 
 import nltk
  
-M = 30
+M = 10
 K = 12
 
 # sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
@@ -371,6 +371,9 @@ if __name__ == "__main__":
 
 #   Extract nodes in the base
     G_base = words[-M:]
+    
+    print(pp(co))
+    print(pp(G_base))
     
 #   Remove high frequency words from, leaving non-high frequency words
     del words[-M:]
