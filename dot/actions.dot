@@ -1,48 +1,66 @@
 graph keygraph {
 graph [size="10,10"]
+test [color="black"]
+make [color="black"]
+employee [color="black"]
+many [color="black"]
+store [color="black"]
+need [color="black"]
+"a/b/n" [color="black"]
+reason [color="black"]
+bandit [color="black"]
+people [color="black"]
 change [color="black"]
 "n-armed" [color="black"]
+exploitation [color="black"]
 exploration [color="black"]
+thing [color="black"]
+recommendation [color="black"]
 customer [color="black"]
-"a/b/n" [color="black"]
 time [color="black"]
-people [color="black"]
-need [color="black"]
-tests [color="black"]
-bandits [color="black"]
-exploitation [color="red"]
 use [color="red"]
+value [color="red"]
 better [color="red"]
-tests--customer
+reason--bandit
+employee--make
+employee--recommendation
+make--recommendation
+many--store
 "a/b/n"--exploration
 "a/b/n"--time
 "a/b/n"--customer
+test--exploration
+test--time
+test--customer
 people--change
+thing--change
 exploration--time
 need--time
 time--customer
-time--bandits
 time--"n-armed"
-customer--bandits
+time--bandit
 customer--"n-armed"
-exploration--bandits
+customer--bandit
+exploitation--"n-armed"
+exploitation--bandit
 exploration--"n-armed"
-tests--"a/b/n"
-tests--bandits
-tests--"n-armed"
-"a/b/n"--bandits
+exploration--bandit
 "a/b/n"--"n-armed"
-bandits--"n-armed"
+"a/b/n"--bandit
+test--"n-armed"
+test--bandit
+"a/b/n"--test
+"n-armed"--bandit
+value--test [color="red", style="dotted"]
+value--"a/b/n" [color="red", style="dotted"]
+value--bandit [color="red", style="dotted"]
+value--"n-armed" [color="red", style="dotted"]
+better--test [color="red", style="dotted"]
 better--"a/b/n" [color="red", style="dotted"]
-better--tests [color="red", style="dotted"]
-better--bandits [color="red", style="dotted"]
+better--bandit [color="red", style="dotted"]
+better--"n-armed" [color="red", style="dotted"]
+use--bandit [color="red", style="dotted"]
 use--"n-armed" [color="red", style="dotted"]
-use--tests [color="red", style="dotted"]
-use--bandits [color="red", style="dotted"]
-exploitation--exploration [color="red", style="dotted"]
-exploitation--"a/b/n" [color="red", style="dotted"]
-exploitation--tests [color="red", style="dotted"]
+use--test [color="red", style="dotted"]
 use--"a/b/n" [color="red", style="dotted"]
-exploitation--"n-armed" [color="red", style="dotted"]
-exploitation--bandits [color="red", style="dotted"]
 }

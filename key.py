@@ -12,7 +12,7 @@ import time
 # import os 
 import nltk
  
-M = 20
+M = 15
 K = 12
 
 # sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
@@ -145,14 +145,6 @@ def strip_stopwords_and_symbols(tokens):
 def lemmatize(tokens):
     lemmatizer = nltk.stem.WordNetLemmatizer()
     return [lemmatizer.lemmatize(w) for w in tokens]
-
-# Lemmatize words in sentences
-def lemmatize_tokens_in_sentences(sentences):
-    lemmatized_sentences = []
-    for s in sentences:
-        tokens = lemmatize(create_tokens(s))
-        lemmatized_sentences.append(" ".join(tokens))
-    return lemmatized_sentences
     
 # Count word frequencies
 def freqcount(tokens):
@@ -350,6 +342,7 @@ if __name__ == "__main__":
 #	Divide into sentences
     sents = create_sentences(nc_text)
     sents = [strip_stopwords_and_symbols(s) for s in sents]
+    sents = [lemmatize(s) for s in sents]
 #    sents = creSentence(nc_text)
 #    sents = lemmatize_tokens_in_sentences(sents)
             
@@ -358,7 +351,7 @@ if __name__ == "__main__":
 #	Divide into tokens
     tokens = create_tokens(nc_text)
     tokens = strip_stopwords_and_symbols(tokens)
-#    tokens = lemmatize(tokens)
+    tokens = lemmatize(tokens)
         
 #	Count word frequencies	
     freq_dict = freqcount(tokens)
