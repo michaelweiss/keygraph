@@ -1,0 +1,22 @@
+graph keygraph {
+graph [size="10,10"]
+"q5-1" [color="black"]
+"q9-1" [color="black"]
+"q3-1" [color="black"]
+"q7-1" [color="black"]
+"q2-1" [color="black"]
+"q1-1" [color="black"]
+"q8-1" [color="black"]
+"q3-1"--"q8-1"
+"q2-1"--"q5-1"
+"q9-1"--"q7-1"
+"q9-1"--"q8-1"
+"q1-1"--"q3-1"
+"q2-1"--"q7-1"
+"q2-1"--"q8-1"
+"q1-1"--"q2-1"
+"q3-1"--"q2-1"
+"q5-1"--"q7-1"
+"q5-1"--"q8-1"
+"q7-1"--"q8-1"
+}

@@ -12,7 +12,7 @@ import time
 # import os 
 import nltk
  
-M = 30
+M = 12
 K = 12
 
 # sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
@@ -280,6 +280,8 @@ def prune(base, base_adj):
         if find_path(base_adj, i, j, [i, j], []):
             print("find path:", [i, j])
             new_base.append([i, j])
+        else:
+            print("no path found:", [i, j])
     return new_base
      
 # Find a path between two nodes that does not include edge
@@ -402,18 +404,19 @@ if __name__ == "__main__":
 #   Calculate co-occurrence degree of high-frequency words
     co = calCo(hf, sents)
         
-#   Remove high frequency words from, leaving non-high frequency words
-    del words[-M:]
-    
 #   Compute the base of G (links between black nodes)
     base = [[i, j] for i, j, c in co[-M:]]  
     
 #   Extract nodes in the base
     G_base = set([x for pair in base for x in pair])
     
+#   Remove high frequency words from, leaving non-high frequency words
+    words = [w for w in words if w not in G_base]
+    
     print(pp(co))
     print(pp(G_base))
-    
+    print(pp(words))
+   
 #   Compute key (terms that tie and hold clusters together) 
     key = key(words, wfs, G_base, sents)
 
