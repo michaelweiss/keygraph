@@ -1,0 +1,36 @@
+graph keygraph {
+graph [size="10,10"]
+action [color="black"]
+cluster [color="black"]
+player [color="black"]
+visualization [color="black"]
+approach [color="black"]
+proposed [color="black"]
+cmds [color="black"]
+technique [color="black"]
+behavior [color="black"]
+u [color="red"]
+propose [color="red"]
+action--behavior
+action--player
+behavior--player
+proposed--technique
+proposed--cmds
+technique--cmds
+cluster--player
+visualization--player
+approach--player
+visualization--approach
+propose--approach [color="red", style="dotted"]
+propose--cmds [color="red", style="dotted"]
+u--action [color="red", style="dotted"]
+u--behavior [color="red", style="dotted"]
+u--cluster [color="red", style="dotted"]
+u--keygraph [color="red", style="dotted"]
+u--player [color="red", style="dotted"]
+u--visualization [color="red", style="dotted"]
+u--approach [color="red", style="dotted"]
+u--proposed [color="red", style="dotted"]
+u--technique [color="red", style="dotted"]
+u--cmds [color="red", style="dotted"]
+}

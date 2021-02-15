@@ -48,6 +48,10 @@ def delNoise(text):
 def creSentence(text):
     return [s.lower() for s in nltk.tokenize.sent_tokenize(text)]
 
+# Divide into sentences and tokenize each sentence
+def create_sentences(text):
+    return [create_tokens(s) for s in creSentence(text)]
+
 # Divide into tokens
 def create_tokens(text):
     return [t.lower() for t in nltk.tokenize.word_tokenize(text)]
@@ -343,13 +347,22 @@ if __name__ == "__main__":
     nc_text = delNoise(doc)
              
 #	Divide into sentences
-    sents = creSentence(nc_text)
-    sents = lemmatize_tokens_in_sentences(sents)
+#    sents = creSentence(nc_text)
+#    sents = lemmatize_tokens_in_sentences(sents)
         
+    sents = create_sentences(nc_text)
+    sents = [strip_stopwords_and_symbols(s) for s in sents]
+    
+    print(pp(sents))
+    
 #	Divide into tokens
     tokens = create_tokens(nc_text)
     tokens = strip_stopwords_and_symbols(tokens)
-    tokens = lemmatize(tokens)
+#    tokens = lemmatize(tokens)
+
+    print(pp(tokens))
+    
+    sys.exit()
     
 #	Count word frequencies	
     freq_dict = freqcount(tokens)
@@ -363,6 +376,8 @@ if __name__ == "__main__":
 #	Calculate word frequency in sentences
     wfs = calwfs(words, sents)
     
+    print(pp(wfs))
+        
 #	Determine high frequency words
     hf = [w for w, f in words_freq[-M:]]
                

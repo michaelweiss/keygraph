@@ -157,6 +157,8 @@ if __name__ == "__main__":
     # Calculate word frequency in sentences
     wfs = calculate_wfs(words, sentences)
     
+    sys.exit()
+    
     # Compute key
     key = key(words, wfs, hf, sentences)
     
