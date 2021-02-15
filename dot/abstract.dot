@@ -1,43 +1,56 @@
 graph keygraph {
 graph [size="10,10"]
-cluster [color="black"]
-approach [color="black"]
 keygraph [color="black"]
-action [color="black"]
+explorer [color="black"]
+matrix [color="black"]
+socializer [color="black"]
 player [color="black"]
-technique [color="black"]
+cluster [color="black"]
+based [color="black"]
 behavior [color="black"]
-cmds [color="black"]
-visualization [color="black"]
+achiever [color="black"]
 proposed [color="black"]
-interest [color="red"]
-analyzing [color="red"]
-interpreting [color="red"]
+approach [color="black"]
+cmds [color="black"]
+game [color="black"]
+action [color="black"]
+type [color="red"]
+found [color="red"]
+evaluation [color="red"]
+first [color="red"]
+approach--proposed
+keygraph--behavior
 keygraph--cmds
-cluster--cmds
-visualization--player
-visualization--cmds
-approach--player
-approach--cmds
-player--cmds
-action--behavior
-action--player
-behavior--player
-proposed--technique
+keygraph--player
+matrix--cmds
+matrix--player
 proposed--cmds
-technique--cmds
+proposed--player
+cluster--behavior
+action--based
+action--cmds
+game--behavior
+achiever--explorer
+achiever--socializer
+explorer--socializer
+approach--player
+action--behavior
 cluster--player
-visualization--approach
-analyzing--behavior [color="red", style="dotted"]
-analyzing--visualization [color="red", style="dotted"]
-interpreting--cluster [color="red", style="dotted"]
-interpreting--keygraph [color="red", style="dotted"]
-interpreting--action [color="red", style="dotted"]
-interpreting--player [color="red", style="dotted"]
-interpreting--behavior [color="red", style="dotted"]
-interest--cluster [color="red", style="dotted"]
-interest--keygraph [color="red", style="dotted"]
-interest--action [color="red", style="dotted"]
-interest--player [color="red", style="dotted"]
-interest--behavior [color="red", style="dotted"]
+based--player
+action--player
+game--player
+cmds--player
+behavior--player
+found--proposed [color="red", style="dotted"]
+found--player [color="red", style="dotted"]
+evaluation--achiever [color="red", style="dotted"]
+evaluation--approach [color="red", style="dotted"]
+evaluation--log [color="red", style="dotted"]
+evaluation--explorer [color="red", style="dotted"]
+evaluation--socializer [color="red", style="dotted"]
+first--cmds [color="red", style="dotted"]
+first--player [color="red", style="dotted"]
+type--log [color="red", style="dotted"]
+found--approach [color="red", style="dotted"]
+found--log [color="red", style="dotted"]
 }

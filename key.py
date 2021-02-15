@@ -12,7 +12,7 @@ import time
 # import os 
 import nltk
  
-M = 15
+M = 30
 K = 12
 
 # sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
@@ -138,7 +138,7 @@ def pop(dic_p, dic_q):
 # Strip stopwords and special symbols from list of words
 def strip_stopwords_and_symbols(tokens):
     stopwords = nltk.corpus.stopwords.words('english')
-    symbols = ["'", '"', '`', '’', '.', ',', '-', '!', '?', ':', ';', '(', ')', '&', '0', '%']
+    symbols = ["'", '"', '“', '”', '`', '’', '.', ',', '-', '!', '?', ':', ';', '(', ')', '[', ']', '&', '0', '%']
     return [w for w in tokens if w not in stopwords + symbols]
 
 # Lemmatize words
@@ -175,7 +175,8 @@ def calCo(hf, sents):
             co[hf1][hf2] = 0 
             for s in sents:
                 # Why sum products, not min, as in Ohsawa (1998)?
-                co[hf1][hf2] += s.count(hf1) * s.count(hf2)
+                # co[hf1][hf2] += s.count(hf1) * s.count(hf2)
+                co[hf1][hf2] += min(s.count(hf1), s.count(hf2))
     co_list = [] 
     for x in co.keys():
         for y in co[x].keys():
@@ -262,7 +263,7 @@ def C(hk, base, sents):
         for b in base:
             c[k][b] = 0
             for s in sents:
-                c[k][b] += s.count(k) * s.count(b)
+                c[k][b] += min(s.count(k), s.count(b))
     c_list = [] 
     for x in c.keys():
         for y in c[x].keys():
@@ -270,6 +271,34 @@ def C(hk, base, sents):
     c_list.sort(key=lambda a: a[2])
     return c_list 
   
+# Prune graph by removing edges that connect clusters
+# That is, if the two ends of an edge are connected only by
+# one edge, remove the edge to create two clusters
+def prune(base, base_adj):
+    new_base = []
+    for [i, j] in base:
+        if find_path(base_adj, i, j, [i, j], []):
+            print("find path:", [i, j])
+            new_base.append([i, j])
+    return new_base
+     
+# Find a path between two nodes that does not include edge
+# This won't necessarily return the best path, but is enough
+# to test whether there is a path
+# https://www.python.org/doc/essays/graphs/
+def find_path(graph, start, end, edge, path=[]):
+    path = path + [start]
+    if start == end:
+        return path
+    if not start in graph:
+        return None
+    for node in [g[0] for g in graph[start] if g[1] == 'base']:
+        if (node not in path) and not([path[-1], node] == edge):
+            new_path = find_path(graph, node, end, edge, path)
+            if new_path:
+                return new_path
+    return None
+        
 # Draw keygraph in dot format
 def draw(base, G_C, fname):
     fout = codecs.open("./dot/" + fname + ".dot","w","utf-8")
@@ -297,7 +326,7 @@ def draw(base, G_C, fname):
     
 # Add optional quotes around a name
 def quote(name):
-    if "-" in name or "/" in name:
+    if "-" in name or "/" in name or "." in name:
         return "\"{}\"".format(name)
     return name
 
@@ -328,6 +357,8 @@ def adjacency_dic(base, G_C, fname):
     fout = codecs.open("./adjacency_list/" + fname + ".txt","w","utf-8")
     fout.write(pp(a_dic))
     fout.close()
+    
+    return a_dic
         
 #-----------Main----------------
 if __name__ == "__main__":
@@ -405,10 +436,12 @@ if __name__ == "__main__":
     # for x, y in G_C:
     #     print(x, y)
 
-    draw(base, G_C, fname)
-
-    adjacency_dic(base, G_C, fname)
+    base_adj = adjacency_dic(base, G_C, fname)
     
+    pruned_based = prune(base, base_adj)
+    
+    draw(pruned_based, G_C, fname)
+
     etime = time.time()
     print("Execution time: %.4f seconds" % (etime - stime))
 
