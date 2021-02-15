@@ -12,7 +12,7 @@ import time
 # import os 
 import nltk
  
-M = 10
+M = 20
 K = 12
 
 # sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
@@ -215,7 +215,10 @@ def key(words, wfs, base, sents):
     # key is a dictionary of the form　key = {w: key value}	
     key = {}   
     Fg = fg(words, wfs, base, sents)
-    # print("Fg", Fg)
+
+    print(pp(Fg))
+    sys.exit()
+    
     for w in words:
         product = 1.0
         for g in base:
@@ -376,23 +379,21 @@ if __name__ == "__main__":
                
 #   Calculate co-occurrence degree of high-frequency words
     co = calCo(hf, sents)
-
-    print(pp(co))
-    
-    sys.exit()
-    
-#   Extract nodes in the base
-    G_base = words[-M:]
-    
-    print(pp(co))
-    print(pp(G_base))
-    
+        
 #   Remove high frequency words from, leaving non-high frequency words
     del words[-M:]
     
 #   Compute the base of G (links between black nodes)
     base = [[i, j] for i, j, c in co[-M:]]  
     
+#   Extract nodes in the base
+    G_base = set([x for pair in base for x in pair])
+    
+    print(pp(co))
+    print(pp(G_base))
+    
+    sys.exit()
+
 #   Compute key (terms that tie and hold clusters together) 
     key = key(words, wfs, G_base, sents)
 
