@@ -19,12 +19,14 @@ def test_strip():
         
 def test_pos_tag():
     s = "the wealthy customers decreased"
+    s = "But that may reduce us the power of this company."
     tags = nltk.pos_tag(nltk.word_tokenize(s))
     print(tags)
     print([(w, wordnet_pos(t)) for w, t in tags])
     
 def test_lemmatize_pos():
     s = "the wealthy customers decreased"
+    s = "But that may reduce us the power of this company."
     lemmatizer = nltk.stem.WordNetLemmatizer()
     tags = nltk.pos_tag(nltk.word_tokenize(s))
     print([lemmatizer.lemmatize(w, wordnet_pos(t)) for w, t in tags])
