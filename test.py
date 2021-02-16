@@ -34,15 +34,22 @@ def test_lemmatize_pos():
    
 def test_tokens():
     doc = Document()
-    doc.read_from_file("./txt_files/d1.txt")
+    doc.read_from_file("./txt_files/d2.txt")
     tokens = doc.create_tokens()
     print(tokens)
     
 def test_sentences():
     doc = Document()
-    doc.read_from_file("./txt_files/d1.txt")
+    doc.read_from_file("./txt_files/d2.txt")
     sentences = doc.create_sentences()
     print(sentences)
+    
+def test_tokens_from():
+    doc = Document("the brown foxes jumped over the fence")
+    tokens = doc.create_tokens_from(doc.content, lemmatized=False)
+    print(tokens)
+    tokens = doc.create_tokens_from(doc.content)
+    print(tokens)
     
 # Lookup WordNet POS
 # https://www.machinelearningplus.com/nlp/lemmatization-examples-python/
@@ -62,3 +69,4 @@ if __name__ == "__main__":
     test_lemmatize_pos()
     test_tokens()
     test_sentences()
+    test_tokens_from()

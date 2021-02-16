@@ -45,21 +45,6 @@ def strip_stopwords_and_symbols(tokens):
     return [w for w in tokens 
             if w not in stopwords + user_defined_stopwords + symbols and len(w) > 1]
 
-# Lemmatize words
-def lemmatize(tokens):
-    lemmatizer = nltk.stem.WordNetLemmatizer()
-    return [lemmatizer.lemmatize(w, wordnet_pos(t)) for w, t in nltk.pos_tag(tokens)]
-
-# Lookup WordNet POS
-# https://www.machinelearningplus.com/nlp/lemmatization-examples-python/
-def wordnet_pos(tag):
-    tags = {"J": nltk.corpus.wordnet.ADJ,
-            "N": nltk.corpus.wordnet.NOUN,
-            "V": nltk.corpus.wordnet.VERB,
-            "R": nltk.corpus.wordnet.ADV}
-    # tag example: 'VBD' for verb
-    return tags.get(tag[0], nltk.corpus.wordnet.NOUN)
-    
 # Count word frequencies
 def freqcount(tokens):
     result = {}
@@ -268,8 +253,6 @@ if __name__ == "__main__":
                  
 #	Divide into sentences
     sents = doc.create_sentences()
-    
-    sents = [lemmatize(s) for s in sents]
     sents = [strip_stopwords_and_symbols(s) for s in sents]
 
 #    sents = creSentence(nc_text)
@@ -277,7 +260,6 @@ if __name__ == "__main__":
             
 #	Divide into tokens
     tokens = doc.create_tokens()
-    tokens = lemmatize(tokens)
     tokens = strip_stopwords_and_symbols(tokens)
         
 #	Count word frequencies	
