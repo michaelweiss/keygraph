@@ -1,6 +1,6 @@
 # keygraph
 
-The goal of this project is to implement the KeyGraph algorithm for chance discovery (Ohsawa et al., 1998; Ohsawa, 2006). It builds on the ShinsakuSegawa/keygraph project.
+The goal of this project is to implement the KeyGraph algorithm for chance discovery (Ohsawa et al., 1998; Ohsawa, 2006). It builds on the github/ShinsakuSegawa/keygraph project.
 
 ## Installation
 
