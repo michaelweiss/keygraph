@@ -29,18 +29,6 @@ def get_file_name():
     print(pp(sys.argv))
     return sys.argv[1]
 
-# Divide into sentences
-def creSentence(text):
-    return [s.lower() for s in nltk.tokenize.sent_tokenize(text)]
-
-# Divide into sentences and tokenize each sentence
-def create_sentences(text):
-    return [create_tokens(s) for s in creSentence(text)]
-
-# Divide into tokens
-def create_tokens(text):
-    return [t.lower() for t in nltk.tokenize.word_tokenize(text)]
-
 # Read user-defined stopwords
 def read_user_defined_stopwords():
     stopwords = []
@@ -279,7 +267,7 @@ if __name__ == "__main__":
     doc.read_from_file('txt_files/' + fname + '.txt')
                  
 #	Divide into sentences
-    sents = create_sentences(doc.content)
+    sents = doc.create_sentences()
     
     sents = [lemmatize(s) for s in sents]
     sents = [strip_stopwords_and_symbols(s) for s in sents]
@@ -288,10 +276,10 @@ if __name__ == "__main__":
 #    sents = lemmatize_tokens_in_sentences(sents)
             
 #	Divide into tokens
-    tokens = create_tokens(doc.content)
+    tokens = doc.create_tokens()
     tokens = lemmatize(tokens)
     tokens = strip_stopwords_and_symbols(tokens)
-    
+        
 #	Count word frequencies	
     freq_dict = freqcount(tokens)
     
