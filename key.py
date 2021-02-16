@@ -12,7 +12,7 @@ import time
 # import os 
 import nltk
  
-M = 20
+M = 14
 K = 12
 
 # sys.stdout = codecs.getwriter('utf_8')(sys.stdout)

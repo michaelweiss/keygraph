@@ -1,56 +1,39 @@
 graph keygraph {
 graph [size="10,10"]
-keygraph [color="black"]
-explorer [color="black"]
-matrix [color="black"]
-socializer [color="black"]
-player [color="black"]
-cluster [color="black"]
-based [color="black"]
-behavior [color="black"]
-achiever [color="black"]
-proposed [color="black"]
-approach [color="black"]
 cmds [color="black"]
-game [color="black"]
+cluster [color="black"]
+propose [color="black"]
+player [color="black"]
+use [color="black"]
+behavior [color="black"]
 action [color="black"]
-type [color="red"]
-found [color="red"]
-evaluation [color="red"]
+keygraph [color="red"]
+input [color="red"]
+locate [color="red"]
+approach [color="red"]
 first [color="red"]
-approach--proposed
-keygraph--behavior
-keygraph--cmds
-keygraph--player
-matrix--cmds
-matrix--player
-proposed--cmds
-proposed--player
-cluster--behavior
-action--based
-action--cmds
-game--behavior
-achiever--explorer
-achiever--socializer
-explorer--socializer
-approach--player
 action--behavior
-cluster--player
-based--player
+propose--cmds
+propose--use
+propose--player
+behavior--use
+cluster--use
+cmds--use
 action--player
-game--player
+cluster--player
 cmds--player
+use--player
 behavior--player
-found--proposed [color="red", style="dotted"]
-found--player [color="red", style="dotted"]
-evaluation--achiever [color="red", style="dotted"]
-evaluation--approach [color="red", style="dotted"]
-evaluation--log [color="red", style="dotted"]
-evaluation--explorer [color="red", style="dotted"]
-evaluation--socializer [color="red", style="dotted"]
-first--cmds [color="red", style="dotted"]
 first--player [color="red", style="dotted"]
-type--log [color="red", style="dotted"]
-found--approach [color="red", style="dotted"]
-found--log [color="red", style="dotted"]
+first--use [color="red", style="dotted"]
+locate--cluster [color="red", style="dotted"]
+locate--player [color="red", style="dotted"]
+keygraph--cmds [color="red", style="dotted"]
+keygraph--player [color="red", style="dotted"]
+keygraph--use [color="red", style="dotted"]
+keygraph--behavior [color="red", style="dotted"]
+input--cmds [color="red", style="dotted"]
+approach--propose [color="red", style="dotted"]
+approach--player [color="red", style="dotted"]
+approach--use [color="red", style="dotted"]
 }
