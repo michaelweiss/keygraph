@@ -10,7 +10,7 @@ To render a KeyGraph, you also need to install a copy of  `Graphviz` (http://www
 
 ## Usage
 
-Suppose the document you want to analyze is in the file `d1.txt` in the `txt_files` folder. To create a KeyGraph from the text, run:
+Suppose the document you want to analyze is in the file `d1.txt` in the `txt_files` folder. To create a KeyGraph from the text in this document, run:
 
 ```bash
 python3 key.py d1
@@ -22,7 +22,7 @@ This creates input for `Graphviz` in the `dot` folder. To render the KeyGraph, r
 dot -Tpdf dot/d1.dot -o graphs/d1.pdf
 ```
 
-In generating the KeyGraph, stopwords in the `noise\stopwords.txt` file are used to remove noise words.
+When generating the KeyGraph, stopwords in the `noise\stopwords.txt` file are used to remove noise words. To add stopwords, add one stopword or symbol per line.
 
 ## References
 
