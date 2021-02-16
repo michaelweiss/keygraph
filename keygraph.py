@@ -29,17 +29,6 @@ def get_file_name():
     print(pp(sys.argv))
     return sys.argv[1]
 
-# Read document from file
-def read_from_file(file_name):
-    f = codecs.open('./txt_files/' + file_name + '.txt', 'r', 'utf-8')
-    doc = f.read()
-    f.close()
-    return doc
-
-# Delete noise
-def delNoise(text):
-    return text 
- 
 # Divide into sentences
 def creSentence(text):
     return [s.lower() for s in nltk.tokenize.sent_tokenize(text)]
@@ -288,12 +277,9 @@ if __name__ == "__main__":
     
     doc = Document()
     doc.read_from_file('txt_files/' + fname + '.txt')
-    
-#	Delete noise
-    nc_text = delNoise(doc.content)
-             
+                 
 #	Divide into sentences
-    sents = create_sentences(nc_text)
+    sents = create_sentences(doc.content)
     
     sents = [lemmatize(s) for s in sents]
     sents = [strip_stopwords_and_symbols(s) for s in sents]
@@ -302,7 +288,7 @@ if __name__ == "__main__":
 #    sents = lemmatize_tokens_in_sentences(sents)
             
 #	Divide into tokens
-    tokens = create_tokens(nc_text)
+    tokens = create_tokens(doc.content)
     tokens = lemmatize(tokens)
     tokens = strip_stopwords_and_symbols(tokens)
     

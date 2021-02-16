@@ -7,6 +7,7 @@ Created on Sun Feb 14 17:05:16 2021
 """
 
 import nltk
+from document import Document
 
 def test_lemmatize():
     lemmatizer = nltk.stem.WordNetLemmatizer()
@@ -31,6 +32,18 @@ def test_lemmatize_pos():
     tags = nltk.pos_tag(nltk.word_tokenize(s))
     print([lemmatizer.lemmatize(w, wordnet_pos(t)) for w, t in tags])
    
+def test_tokens():
+    doc = Document()
+    doc.read_from_file("./txt_files/d1.txt")
+    tokens = doc.create_tokens()
+    print(tokens)
+    
+def test_sentences():
+    doc = Document()
+    doc.read_from_file("./txt_files/d1.txt")
+    sentences = doc.create_sentences()
+    print(sentences)
+    
 # Lookup WordNet POS
 # https://www.machinelearningplus.com/nlp/lemmatization-examples-python/
 def wordnet_pos(tag):
@@ -47,3 +60,5 @@ if __name__ == "__main__":
     test_strip()
     test_pos_tag()
     test_lemmatize_pos()
+    test_tokens()
+    test_sentences()
