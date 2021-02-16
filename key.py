@@ -4,15 +4,11 @@
 import sys
 # import MeCab
 import codecs
-# import re 
 import pprint
-# import itertools
 import time
-# import unicodedata
-# import os 
 import nltk
  
-M = 14
+M = 20
 K = 12
 
 # sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
@@ -22,7 +18,6 @@ K = 12
 def pp(obj):
     pp = pprint.PrettyPrinter(indent=4, width=160)
     s = pp.pformat(obj)
-#    return re.sub(r"\\u([0-9a-f]{4})", lambda x: unichr(int("0x"+x.group(1),16)),str)
     return s
   
 # Read file name from the console
@@ -55,85 +50,6 @@ def create_sentences(text):
 # Divide into tokens
 def create_tokens(text):
     return [t.lower() for t in nltk.tokenize.word_tokenize(text)]
-
-#名詞だけを取得してリストにいれる　リストを返す 数字抜き
-def pyMecab(s):
-    pass
-#     tagger = MeCab.Tagger('-Ochasen')
-#     node = tagger.parseToNode(s.encode('utf-8'))
-#     nouns = []
-#     while node:
-# #		    めかぶの名詞のidが38から60なんだよね　数字id=48抜き
-#         if node.posid >= 38 and node.posid <= 67 and not(node.posid == 49):
-#             if isValid(node.surface.decode('utf-8')) == True:
-#                 nouns.append(node.surface.decode('utf-8'))
-#         node = node.next
-#     return nouns
-
-
-def isValid(word):
-#     alldigit = re.compile(ur"^[0-9]+$")
-#     """wordが登録対象の単語のときTrueを返す"""
-# # 	    1文字の単語は登録しない
-#     if len(word) == 1:
-#         return False
-# # 	    数字だけの単語は登録しない
-#     if alldigit.search(word) != None:
-#         return False
-# # 	    仮名2文字の単語は登録しない
-#     if len(word) == 2 and unicodedata.name(word[0])[0:8] == "HIRAGANA" and unicodedata.name(word[1])[0:8] == "HIRAGANA":
-#         return False
-# #       仮名、漢字、数字、英字以外の文字を含む単語は登録しない
-#     for c in word:
-#         if not (unicodedata.name(c)[0:8] == "HIRAGANA" or
-#                unicodedata.name(c)[0:8] == "KATAKANA" or
-#                unicodedata.name(c)[0:3] == "CJK" or
-#                unicodedata.name(c)[0:5] == "DIGIT" 
-# #               英語を削除しています　コメントをとれば英語も入ります． 
-#               ''' unicodedata.name(c)[0:5] == "LATIN"'''):
-#             return False
-    return True
-
-#   popで熟語のやつを消すぜー	
-def pop(dic_p, dic_q):
-#     list_p = sorted(dic_p.items(), key=lambda a: a[1])   
-#     list_q = sorted(dic_q.items(), key=lambda a: a[1])
-   
-#     for kq,vq in list_q:
-#         for kp,vp in list_p:
-#             print(kp, vp, kq, vq, "%s.count(%s)" % (kq, kp), kq.count(kp))
-# #			Check if it is included
-#             if(kq.count(kp)>0):
-# #				print kp, di_comb_p[kp], kq, di_idiom_q[kq]
-#                 print(dic_p.get(kp), dic_q.get(kq))
-#                 if(dic_p.get(kp) <= dic_q.get(kq)):
-#                     if kp in dic_p:
-#                         #print kp, kq
-#                         dic_p.pop(kp)
-#                 else:
-#                     if kq in dic_q:
-#                         #print kq, kp
-#                         dic_q.pop(kq)
-#             print(kp, vp, kq, vq, "%s.count(%s)" % (kp, kq), kp.count(kq))
-#             if(kp.count(kq)>0):
-# #				print kp, di_comb_p[kp], kq, di_idiom_q[kq]
-#                 print(dic_p.get(kp), dic_q.get(kq))
-#                 if(dic_p.get(kp) <= dic_q.get(kq)):
-#                     if(dic_p.has_key(kp)):
-#                         #print kp, kq
-#                         dic_p.pop(kp)
-#                 else:
-#                     if(dic_q.has_key(kq)):
-#                         #print kq, kp
-#                         dic_q.pop(kq)
-
-#     list_p = dic_p.items()
-#     list_q = dic_q.items()
-#     list_idiom = list_p
-#     list_idiom.extend(list_q)
-    
-#     return sorted(list_p, key=lambda a: a[1])
-    pass
 
 # Read user-defined stopwords
 def read_user_defined_stopwords():
@@ -204,25 +120,6 @@ def calCo(hf, sents):
     co_list.sort(key=lambda a: a[2])
     return co_list 
  
-#linkを張る
-# Not needed: can extract base from words[-M:]
-def link(base):
-    base_set = flatten(base)
-    base_set = set(base_set)
-         
-    print(list(base_set))
-    return list(base_set)
-     
-#リストの平坦化 
-# Not needed: can extract base from words[-M:]
-def flatten(x, isflat=lambda x:not isinstance(x, list)):
-    if isflat(x):
-        yield x
-    else:
-        for item in x:
-            for i in flatten(item, isflat):
-                yield i
-                            
 # Compute key (terms that tie and hold clusters together) 
 def key(words, wfs, base, sents):
     # key is a dictionary of the form　key = {w: key value}	
