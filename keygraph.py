@@ -6,6 +6,8 @@ import codecs
 import pprint
 import time
 import nltk
+
+from document import Document
  
 M = 12
 K = 12
@@ -29,7 +31,7 @@ def get_file_name():
 
 # Read document from file
 def read_from_file(file_name):
-    f = codecs.open('./txt_files/' + fname + '.txt', 'r', 'utf-8')
+    f = codecs.open('./txt_files/' + file_name + '.txt', 'r', 'utf-8')
     doc = f.read()
     f.close()
     return doc
@@ -283,10 +285,12 @@ if __name__ == "__main__":
     stime = time.time() 
     
     fname = get_file_name()
-    doc = read_from_file(fname)
+    
+    doc = Document()
+    doc.read_from_file('txt_files/' + fname + '.txt')
     
 #	Delete noise
-    nc_text = delNoise(doc)
+    nc_text = delNoise(doc.content)
              
 #	Divide into sentences
     sents = create_sentences(nc_text)

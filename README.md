@@ -13,7 +13,7 @@ To render a KeyGraph, you also need to install a copy of  `Graphviz` (http://www
 Suppose the document you want to analyze is in the file `d1.txt` in the `txt_files` folder. To create a KeyGraph from the text in this document, run:
 
 ```bash
-python3 key.py d1
+python3 keygraph.py d1
 ```
 
 This creates input for `Graphviz` in the `dot` folder. To render the KeyGraph, run:
