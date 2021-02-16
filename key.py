@@ -12,7 +12,7 @@ import time
 # import os 
 import nltk
  
-M = 5
+M = 20
 K = 12
 
 # sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
@@ -147,7 +147,7 @@ user_defined_stopwords = read_user_defined_stopwords()
 # Strip stopwords and special symbols from list of words
 def strip_stopwords_and_symbols(tokens):
     stopwords = nltk.corpus.stopwords.words('english')
-    symbols = ["'", '"', '“', '”', '`', '’', '.', ',', '-', '!', '?', ':', ';', '(', ')', '[', ']', '&', '0', '%', '...']
+    symbols = ["'", '"', '“', '”', '`', '’', '.', ',', '-', '!', '?', ':', ';', '(', ')', '[', ']', '&', '0', '%', '...', '--']
     return [w for w in tokens 
             if w not in stopwords + user_defined_stopwords + symbols and len(w) > 1]
 
@@ -348,7 +348,7 @@ def draw(base, G_C, fname):
     
 # Add optional quotes around a name
 def quote(name):
-    if "-" in name or "/" in name or "." in name:
+    if 1 in [c in name for c in ['-', '/', '.', '\'']]:
         return "\"{}\"".format(name)
     return name
 

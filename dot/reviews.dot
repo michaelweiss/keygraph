@@ -1,0 +1,37 @@
+graph keygraph {
+graph [size="10,10"]
+use [color="black"]
+tv [color="black"]
+fire [color="black"]
+device [color="black"]
+kindle [color="black"]
+amazon [color="black"]
+movie [color="red"]
+year [color="red"]
+hd [color="red"]
+hdx [color="red"]
+review [color="red"]
+content [color="red"]
+device--use
+amazon--use
+device--kindle
+tv--use
+tv--amazon
+use--kindle
+amazon--fire
+use--fire
+tv--fire
+fire--kindle
+movie--tv [color="red", style="dotted"]
+content--tv [color="red", style="dotted"]
+review--kindle [color="red", style="dotted"]
+hdx--use [color="red", style="dotted"]
+content--prime [color="red", style="dotted"]
+year--fire [color="red", style="dotted"]
+movie--prime [color="red", style="dotted"]
+hdx--kindle [color="red", style="dotted"]
+year--kindle [color="red", style="dotted"]
+hdx--fire [color="red", style="dotted"]
+hd--kindle [color="red", style="dotted"]
+hd--fire [color="red", style="dotted"]
+}
