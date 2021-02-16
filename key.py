@@ -2,13 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import sys
-# import MeCab
 import codecs
 import pprint
 import time
 import nltk
  
-M = 20
+M = 12
 K = 12
 
 # sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
@@ -358,9 +357,9 @@ if __name__ == "__main__":
 
     base_adj = adjacency_dic(base, G_C, fname)
     
-    pruned_based = prune(base, base_adj)
+    pruned_base = prune(base, base_adj)
     
-    draw(pruned_based, G_C, fname)
+    draw(pruned_base, G_C, fname)
 
     etime = time.time()
     print("Execution time: %.4f seconds" % (etime - stime))
