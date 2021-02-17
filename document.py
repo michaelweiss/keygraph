@@ -7,6 +7,7 @@ import nltk
 class Document:
     def __init__(self, content = "", file_name = None):
         self.content = self.read_from_file(file_name) if file_name else content
+        self.stopwords = self.read_stopwords()
     
     # Read content from file
     def read_from_file(self, file_name):
@@ -15,11 +16,25 @@ class Document:
         f.close()
         return content
     
+    # Read user-defined stopwords
+    def read_stopwords(self):
+        stopwords = []
+        for line in codecs.open('./noise/stopwords.txt', 'r', 'utf-8'):
+            stopwords.append(line.strip())
+        stopwords_en = nltk.corpus.stopwords.words('english')
+        symbols = ["'", '"', '“', '”', '`', '’', '.', ',', '-', '!', '?', ':', ';', '(', ')', '[', ']', '&', '0', '%', '...', '--']
+        return stopwords_en + stopwords + symbols
+
     # Divide a string into tokens
-    def create_tokens_from(self, s, lemmatized=True):
+    def create_tokens_from(self, s, lemmatized=True, strip_stopwords=True):
         tokens = [t.lower() for t in nltk.tokenize.word_tokenize(s)]
-        return self.lemmatize(tokens) if lemmatized else tokens
+        tokens = self.lemmatize(tokens) if lemmatized else tokens
+        return self.strip_stopwords(tokens) if strip_stopwords else tokens
     
+    # Strip stopwords and symbols from tokens
+    def strip_stopwords(self, tokens):
+        return [t for t in tokens if not t in self.stopwords]
+        
     # Divide into tokens
     def create_tokens(self):
         return self.create_tokens_from(self.content)
@@ -31,7 +46,8 @@ class Document:
     # Lemmatize words
     def lemmatize(self, tokens):
         lemmatizer = nltk.stem.WordNetLemmatizer()
-        return [lemmatizer.lemmatize(w, self.wordnet_pos(t)) for w, t in nltk.pos_tag(tokens)]
+        return [lemmatizer.lemmatize(w, self.wordnet_pos(t)) 
+                for w, t in nltk.pos_tag(tokens)]
     
     # Lookup WordNet POS
     # https://www.machinelearningplus.com/nlp/lemmatization-examples-python/
@@ -43,4 +59,3 @@ class Document:
         # tag example: 'VBD' for verb
         return tags.get(tag[0], nltk.corpus.wordnet.NOUN)
         
-

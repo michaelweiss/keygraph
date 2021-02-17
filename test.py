@@ -44,6 +44,8 @@ def test_sentences():
     
 def test_tokens_from():
     doc = Document("the brown foxes jumped over the fence")
+    tokens = doc.create_tokens_from(doc.content, lemmatized=False, strip_stopwords=False)
+    print(tokens)
     tokens = doc.create_tokens_from(doc.content, lemmatized=False)
     print(tokens)
     tokens = doc.create_tokens_from(doc.content)

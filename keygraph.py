@@ -5,7 +5,6 @@ import sys
 import codecs
 import pprint
 import time
-import nltk
 
 from document import Document
  
@@ -28,22 +27,6 @@ def get_file_name():
         sys.exit()
     print(pp(sys.argv))
     return sys.argv[1]
-
-# Read user-defined stopwords
-def read_user_defined_stopwords():
-    stopwords = []
-    for line in codecs.open('./noise/stopwords.txt', 'r', 'utf-8'):
-        stopwords.append(line.strip())
-    return stopwords
-
-user_defined_stopwords = read_user_defined_stopwords()
-
-# Strip stopwords and special symbols from list of words
-def strip_stopwords_and_symbols(tokens):
-    stopwords = nltk.corpus.stopwords.words('english')
-    symbols = ["'", '"', '“', '”', '`', '’', '.', ',', '-', '!', '?', ':', ';', '(', ')', '[', ']', '&', '0', '%', '...', '--']
-    return [w for w in tokens 
-            if w not in stopwords + user_defined_stopwords + symbols and len(w) > 1]
 
 # Count word frequencies
 def freqcount(tokens):
@@ -249,14 +232,12 @@ if __name__ == "__main__":
     fname = get_file_name()
     doc = Document(file_name = 'txt_files/' + fname + '.txt')
                  
-#	Divide into sentences
-    sents = doc.create_sentences()
-    sents = [strip_stopwords_and_symbols(s) for s in sents]
-            
 #	Divide into tokens
     tokens = doc.create_tokens()
-    tokens = strip_stopwords_and_symbols(tokens)
-        
+    
+#   Divide into sentences
+    sents = doc.create_sentences()
+            
 #	Count word frequencies	
     freq_dict = freqcount(tokens)
     
