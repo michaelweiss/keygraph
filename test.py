@@ -33,14 +33,12 @@ def test_lemmatize_pos():
     print([lemmatizer.lemmatize(w, wordnet_pos(t)) for w, t in tags])
    
 def test_tokens():
-    doc = Document()
-    doc.read_from_file("./txt_files/d2.txt")
+    doc = Document(file_name = "./txt_files/d2.txt")
     tokens = doc.create_tokens()
     print(tokens)
     
 def test_sentences():
-    doc = Document()
-    doc.read_from_file("./txt_files/d2.txt")
+    doc = Document(file_name = "./txt_files/d2.txt")
     sentences = doc.create_sentences()
     print(sentences)
     

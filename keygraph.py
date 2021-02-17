@@ -247,16 +247,11 @@ if __name__ == "__main__":
     stime = time.time() 
     
     fname = get_file_name()
-    
-    doc = Document()
-    doc.read_from_file('txt_files/' + fname + '.txt')
+    doc = Document(file_name = 'txt_files/' + fname + '.txt')
                  
 #	Divide into sentences
     sents = doc.create_sentences()
     sents = [strip_stopwords_and_symbols(s) for s in sents]
-
-#    sents = creSentence(nc_text)
-#    sents = lemmatize_tokens_in_sentences(sents)
             
 #	Divide into tokens
     tokens = doc.create_tokens()

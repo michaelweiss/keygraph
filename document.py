@@ -5,14 +5,15 @@ import codecs
 import nltk
 
 class Document:
-    def __init__(self, content = ""):
-        self.content = content
+    def __init__(self, content = "", file_name = None):
+        self.content = self.read_from_file(file_name) if file_name else content
     
     # Read content from file
     def read_from_file(self, file_name):
         f = codecs.open(file_name, 'r', 'utf-8')
-        self.content = f.read()
+        content = f.read()
         f.close()
+        return content
     
     # Divide a string into tokens
     def create_tokens_from(self, s, lemmatized=True):
@@ -42,3 +43,4 @@ class Document:
         # tag example: 'VBD' for verb
         return tags.get(tag[0], nltk.corpus.wordnet.NOUN)
         
+
