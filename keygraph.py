@@ -27,16 +27,6 @@ def get_file_name():
         sys.exit()
     print(pp(sys.argv))
     return sys.argv[1]
-
-# Count word frequencies
-def freqcount(tokens):
-    result = {}
-    for t in tokens:
-        if t in result:
-            result[t] += 1
-        else:
-            result[t] = 1
-    return result	
  
 #	Calculate word frequency in sentences
 def calwfs(words, sents):
@@ -232,14 +222,14 @@ if __name__ == "__main__":
     fname = get_file_name()
     doc = Document(file_name = 'txt_files/' + fname + '.txt')
                  
-#	Divide into tokens
+#   Divide into tokens
     tokens = doc.create_tokens()
     
 #   Divide into sentences
     sents = doc.create_sentences()
             
 #	Count word frequencies	
-    freq_dict = freqcount(tokens)
+    freq_dict = doc.freq_count(tokens)
     
 #   Sort words by their frequency (in ascending order)
     words_freq = sorted(freq_dict.items(), key=lambda x: x[1])

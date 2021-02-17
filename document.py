@@ -58,4 +58,14 @@ class Document:
                 "R": nltk.corpus.wordnet.ADV}
         # tag example: 'VBD' for verb
         return tags.get(tag[0], nltk.corpus.wordnet.NOUN)
-        
+   
+    # Count word frequencies
+    def freq_count(self, tokens):
+        result = {}
+        for t in tokens:
+            if t in result:
+                result[t] += 1
+            else:
+                result[t] = 1
+        return result	
+     
