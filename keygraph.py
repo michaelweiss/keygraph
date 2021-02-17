@@ -28,6 +28,10 @@ def get_file_name():
     print(pp(sys.argv))
     return sys.argv[1]
  
+class KeyGraph:
+    def __init__(self, document):
+        self.document = document
+    
 #	Calculate word frequency in sentences
 def calwfs(words, sents):
     wfs = {} 
@@ -221,15 +225,10 @@ if __name__ == "__main__":
     
     fname = get_file_name()
     doc = Document(file_name = 'txt_files/' + fname + '.txt')
-                 
-#   Divide into tokens
-    tokens = doc.create_tokens()
+    sents = doc.sentences
     
-#   Divide into sentences
-    sents = doc.create_sentences()
-            
-#	Count word frequencies	
-    freq_dict = doc.freq_count(tokens)
+#   Count word frequencies	
+    freq_dict = doc.freq_count()
     
 #   Sort words by their frequency (in ascending order)
     words_freq = sorted(freq_dict.items(), key=lambda x: x[1])

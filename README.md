@@ -26,6 +26,6 @@ When generating the KeyGraph, stopwords in the `noise\stopwords.txt` file are us
 
 ## References
 
-Ohsawa, Y., Benson, N. E., & Yachida, M. (1998). KeyGraph: Automatic indexing by co-occurrence graph based on building construction metaphor. International Forum on Research and Technology Advances in Digital Librarie (ADL), 12-18). IEEE.
+Ohsawa, Y., Benson, N. E., & Yachida, M. (1998). KeyGraph: Automatic indexing by co-occurrence graph based on building construction metaphor. International Forum on Research and Technology Advances in Digital Libraries (ADL), 12-18). IEEE.
 
 Ohsawa, Y. (2006). Chance discovery: The current states of art. In: Ohsawa, Y., & Tsumoko, E. (eds.), Chance Discoveries in Real World Decision Making, 3-20. Springer.

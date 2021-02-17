@@ -8,6 +8,8 @@ class Document:
     def __init__(self, content = "", file_name = None):
         self.content = self.read_from_file(file_name) if file_name else content
         self.stopwords = self.read_stopwords()
+        self.tokens = self.create_tokens()
+        self.sentences = self.create_sentences()
     
     # Read content from file
     def read_from_file(self, file_name):
@@ -60,12 +62,13 @@ class Document:
         return tags.get(tag[0], nltk.corpus.wordnet.NOUN)
    
     # Count word frequencies
-    def freq_count(self, tokens):
+    def freq_count(self):
         result = {}
-        for t in tokens:
+        for t in self.tokens:
             if t in result:
                 result[t] += 1
             else:
                 result[t] = 1
-        return result	
+        return result
+    
      
