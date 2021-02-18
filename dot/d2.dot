@@ -1,16 +1,16 @@
 graph keygraph {
 graph [size="10,10"]
-reduce [color="black"]
-construction [color="black"]
-steel [color="black"]
+decrease [color="black"]
 customer [color="black"]
 market [color="black"]
-decrease [color="black"]
+construction [color="black"]
 company [color="black"]
+steel [color="black"]
+reduce [color="black"]
 concrete [color="black"]
+general [color="red"]
 price [color="red"]
 induce [color="red"]
-general [color="red"]
 construction--customer
 construction--company
 concrete--reduce
@@ -23,16 +23,16 @@ concrete--steel
 concrete--company
 steel--company
 reduce--company
+induce--decrease [color="red", style="dotted"]
 induce--customer [color="red", style="dotted"]
 induce--market [color="red", style="dotted"]
-induce--decrease [color="red", style="dotted"]
-general--construction [color="red", style="dotted"]
+general--decrease [color="red", style="dotted"]
 general--customer [color="red", style="dotted"]
 general--market [color="red", style="dotted"]
-general--decrease [color="red", style="dotted"]
-price--reduce [color="red", style="dotted"]
+general--construction [color="red", style="dotted"]
 price--construction [color="red", style="dotted"]
-price--steel [color="red", style="dotted"]
 price--company [color="red", style="dotted"]
+price--steel [color="red", style="dotted"]
+price--reduce [color="red", style="dotted"]
 price--concrete [color="red", style="dotted"]
 }

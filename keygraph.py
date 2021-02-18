@@ -14,19 +14,21 @@ K = 12
 # sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
 # sys.stdin = codecs.getreader('utf_8')(sys.stdin)
 
-# Pretty-print a Python object
-def pp(obj):
-    pp = pprint.PrettyPrinter(indent=4, width=160)
-    s = pp.pformat(obj)
-    return s
+class Util:
+    @staticmethod
+    # Pretty-print a Python object
+    def pp(obj):
+        pp = pprint.PrettyPrinter(indent=4, width=160)
+        s = pp.pformat(obj)
+        return s    
   
-# Read file name from the console
-def get_file_name():
-    if (len(sys.argv) != 2):
-        print("Usage: #python %s file-name" % sys.argv[0])
-        sys.exit()
-    print(pp(sys.argv))
-    return sys.argv[1]
+    @staticmethod
+    # Read file name from the console
+    def get_file_name():
+        if (len(sys.argv) != 2):
+            print("Usage: #python %s file-name" % sys.argv[0])
+            sys.exit()
+        return sys.argv[1]
  
 class KeyGraph:
     def __init__(self, document, M=30, K=12):
@@ -241,7 +243,7 @@ def adjacency_dic(base, G_C, fname):
             a_dic[j] = [[i,'key']] 
 
     fout = codecs.open("./adjacency_list/" + fname + ".txt","w","utf-8")
-    fout.write(pp(a_dic))
+    fout.write(Util.pp(a_dic))
     fout.close()
     
     return a_dic
@@ -251,7 +253,7 @@ if __name__ == "__main__":
     stime = time.time() 
     
 #   Create a document
-    fname = get_file_name()
+    fname = Util.get_file_name()
     doc = Document(file_name = 'txt_files/' + fname + '.txt')
     sents = doc.sentences
         
@@ -269,9 +271,9 @@ if __name__ == "__main__":
 #   Remove high frequency words from, leaving non-high frequency words
     words = [w for w in kg.words if w not in G_base]
     
-    print(pp(co))
-    print(pp(G_base))
-    print(pp(words))
+    print(Util.pp(co))
+    print(Util.pp(G_base))
+    print(Util.pp(words))
    
 #   Compute key (terms that tie and hold clusters together) 
     key = key(words, wfs, G_base, sents)
