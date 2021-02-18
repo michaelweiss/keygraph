@@ -29,8 +29,15 @@ def get_file_name():
     return sys.argv[1]
  
 class KeyGraph:
-    def __init__(self, document):
+    def __init__(self, document, M=30, K=12):
         self.document = document
+        self.M = M
+        self.K = K
+
+#   Sort words by their frequency (in ascending order)
+    def words_sorted_by_freq(self):
+        freq_count = self.document.freq_count()
+        return sorted(freq_count.items(), key=lambda x: x[1])
     
 #	Calculate word frequency in sentences
 def calwfs(words, sents):
@@ -223,18 +230,19 @@ def adjacency_dic(base, G_C, fname):
 if __name__ == "__main__":
     stime = time.time() 
     
+#   Create a document
     fname = get_file_name()
     doc = Document(file_name = 'txt_files/' + fname + '.txt')
     sents = doc.sentences
     
-#   Count word frequencies	
-    freq_dict = doc.freq_count()
-    
+#   Create a keygraph
+    keygraph = KeyGraph(doc)
+        
 #   Sort words by their frequency (in ascending order)
-    words_freq = sorted(freq_dict.items(), key=lambda x: x[1])
+    words_freq = keygraph.words_sorted_by_freq()
 
 #   Compute unique words
-    words = [w for w, z in words_freq]
+    words = [w for w, _ in words_freq]
           
 #	Calculate word frequency in sentences
     wfs = calwfs(words, sents)
