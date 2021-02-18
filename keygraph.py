@@ -33,11 +33,22 @@ class KeyGraph:
         self.document = document
         self.M = M
         self.K = K
+        
+        self.compute_base() # step 1
+        self.compute_hubs() # step 2
 
-#   Sort words by their frequency (in ascending order)
-    def words_sorted_by_freq(self):
+#   Compute base of frequently co-occurring words
+    def compute_base(self):
+        # Sort words by their frequency (in ascending order)
         freq_count = self.document.freq_count()
-        return sorted(freq_count.items(), key=lambda x: x[1])
+        self.words_freq = sorted(freq_count.items(), key=lambda x: x[1])
+        
+        # Compute unique words        
+        self.words = [w for w, f in self.words_freq]
+    
+#   Compute hubs that connect words in the base
+    def compute_hubs(self):
+        pass
     
 #	Calculate word frequency in sentences
 def calwfs(words, sents):
@@ -235,20 +246,17 @@ if __name__ == "__main__":
     doc = Document(file_name = 'txt_files/' + fname + '.txt')
     sents = doc.sentences
     
+    print(pp(doc.tokens))
+    sys.exit()
+    
 #   Create a keygraph
-    keygraph = KeyGraph(doc)
+    kg = KeyGraph(doc)
         
-#   Sort words by their frequency (in ascending order)
-    words_freq = keygraph.words_sorted_by_freq()
-
-#   Compute unique words
-    words = [w for w, _ in words_freq]
-          
 #	Calculate word frequency in sentences
-    wfs = calwfs(words, sents)
+    wfs = calwfs(kg.words, sents)
             
 #	Determine high frequency words
-    hf = [w for w, f in words_freq[-M:]]
+    hf = [w for w, f in kg.words_freq[-M:]]
                
 #   Calculate co-occurrence degree of high-frequency words
     co = calCo(hf, sents)
@@ -260,7 +268,7 @@ if __name__ == "__main__":
     G_base = set([x for pair in base for x in pair])
     
 #   Remove high frequency words from, leaving non-high frequency words
-    words = [w for w in words if w not in G_base]
+    words = [w for w in kg.words if w not in G_base]
     
     print(pp(co))
     print(pp(G_base))

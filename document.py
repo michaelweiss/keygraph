@@ -20,12 +20,11 @@ class Document:
     
     # Read user-defined stopwords
     def read_stopwords(self):
-        stopwords = []
+        stopwords = nltk.corpus.stopwords.words('english')
         for line in codecs.open('./noise/stopwords.txt', 'r', 'utf-8'):
             stopwords.append(line.strip())
-        stopwords_en = nltk.corpus.stopwords.words('english')
         symbols = ["'", '"', '“', '”', '`', '’', '.', ',', '-', '!', '?', ':', ';', '(', ')', '[', ']', '&', '0', '%', '...', '--']
-        return stopwords_en + stopwords + symbols
+        return stopwords + symbols
 
     # Divide a string into tokens
     def create_tokens_from(self, s, lemmatized=True, strip_stopwords=True):
@@ -35,7 +34,7 @@ class Document:
     
     # Strip stopwords and symbols from tokens
     def strip_stopwords(self, tokens):
-        return [t for t in tokens if not t in self.stopwords]
+        return [t for t in tokens if not t in self.stopwords and len(t) > 1]
         
     # Divide into tokens
     def create_tokens(self):
