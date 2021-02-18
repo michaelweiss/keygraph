@@ -31,9 +31,6 @@ def get_file_name():
 class KeyGraph:
     def __init__(self, document, M=30, K=12):
         self.document = document
-        self.M = M
-        self.K = K
-        
         self.compute_base() # step 1
         self.compute_hubs() # step 2
 
@@ -47,40 +44,46 @@ class KeyGraph:
         self.words = [w for w, f in self.words_freq]
         
         # Calculate word frequency in sentences
-        self.wfs = self.calculate_wfs(self.words, self.document.sentences)
+        self.wfs = self.calculate_wfs()
+        
+        # Determine high frequency words
+        hf = [w for w, f in self.words_freq[-M:]]
+
+        # Calculate co-occurrence degree of high-frequency words
+        self.co = self.calculate_co_occurrence(hf, self.document.sentences)
     
-#	Calculate word frequency in sentences
-    def calculate_wfs(self, words, sents):
-        wfs = {} 
-        for w in words:
-            for s_idx, s in enumerate(sents):
+#   Calculate word frequency in sentences
+    def calculate_wfs(self):
+        wfs = {}
+        for w in self.words:
+            for s_idx, s in enumerate(self.document.sentences):
                 if w not in wfs:
                     wfs[w] = {}
                 wfs[w][s_idx] = s.count(w)
-        return wfs	
+        return wfs
+    
+#   Calculate co-occurrence degree of high-frequency words
+    def calculate_co_occurrence(self, hf, sents):
+        co = {}
+        for hf1 in hf:
+            co[hf1] = {}
+            for hf2 in hf[hf.index(hf1)+1:]:
+                co[hf1][hf2] = 0
+                for s in sents:
+                    # Why sum products, not min, as in Ohsawa (1998)?
+                    # co[hf1][hf2] += s.count(hf1) * s.count(hf2)
+                    co[hf1][hf2] += min(s.count(hf1), s.count(hf2))
+        co_list = []
+        for x in co.keys():
+            for y in co[x].keys():
+                co_list.append([x, y, co[x][y]])
+        co_list.sort(key=lambda a: a[2])
+        return co_list
  
 #   Compute hubs that connect words in the base
     def compute_hubs(self):
         pass
-    
-#   Calculate co-occurrence degree of high-frequency words
-def calCo(hf, sents):
-    co = {} 
-    for hf1 in hf:
-        co[hf1] = {}
-        for hf2 in hf[hf.index(hf1)+1:]:
-            co[hf1][hf2] = 0 
-            for s in sents:
-                # Why sum products, not min, as in Ohsawa (1998)?
-                # co[hf1][hf2] += s.count(hf1) * s.count(hf2)
-                co[hf1][hf2] += min(s.count(hf1), s.count(hf2))
-    co_list = [] 
-    for x in co.keys():
-        for y in co[x].keys():
-            co_list.append([x, y, co[x][y]])    
-    co_list.sort(key=lambda a: a[2])
-    return co_list 
- 
+     
 # Compute key (terms that tie and hold clusters together) 
 def key(words, wfs, base, sents):
     # key is a dictionary of the form　key = {w: key value}	
@@ -254,13 +257,8 @@ if __name__ == "__main__":
     words_freq = kg.words_freq
     words = kg.words
     wfs = kg.wfs
+    co = kg.co
             
-#	Determine high frequency words
-    hf = [w for w, f in words_freq[-M:]]
-               
-#   Calculate co-occurrence degree of high-frequency words
-    co = calCo(hf, sents)
-        
 #   Compute the base of G (links between black nodes)
     base = [[i, j] for i, j, c in co[-M:]]  
     
