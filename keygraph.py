@@ -31,7 +31,7 @@ def get_file_name():
 class KeyGraph:
     def __init__(self, document, M=30, K=12):
         self.document = document
-        self.compute_base() # step 1
+        self.base = self.compute_base() # step 1
         self.compute_hubs() # step 2
 
 #   Compute base of frequently co-occurring words
@@ -51,6 +51,9 @@ class KeyGraph:
 
         # Calculate co-occurrence degree of high-frequency words
         self.co = self.calculate_co_occurrence(hf, self.document.sentences)
+
+        # Compute the base of G (links between black nodes)
+        return [[i, j] for i, j, c in self.co[-M:]]  
     
 #   Calculate word frequency in sentences
     def calculate_wfs(self):
@@ -258,10 +261,8 @@ if __name__ == "__main__":
     words = kg.words
     wfs = kg.wfs
     co = kg.co
+    base = kg.base
             
-#   Compute the base of G (links between black nodes)
-    base = [[i, j] for i, j, c in co[-M:]]  
-    
 #   Extract nodes in the base
     G_base = set([x for pair in base for x in pair])
     
