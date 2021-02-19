@@ -283,26 +283,12 @@ if __name__ == "__main__":
 #   Create a document
     fname = Util.get_file_name()
     doc = Document(file_name = 'txt_files/' + fname + '.txt')
-    sents = doc.sentences
         
 #   Create a keygraph
     kg = KeyGraph(doc)
-    
-#    words_freq = kg.words_freq
-#    words = kg.words
-#    wfs = kg.wfs
-#    co = kg.co
-    base = kg.base
-    G_base = kg.G_base
-                       
-#   Compute key (terms that tie and hold clusters together) 
-    key = kg.key      
-    high_key = kg.high_key
-    C = kg.C
-    G_C = kg.G_C
-    
+                           
     kg.save_adjacency_list(fname)
-    kg.draw(base, G_C, fname)
+    kg.draw(kg.base, kg.G_C, fname)
 
     etime = time.time()
     print("Execution time: %.4f seconds" % (etime - stime))
