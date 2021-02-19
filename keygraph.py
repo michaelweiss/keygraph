@@ -96,22 +96,22 @@ class KeyGraph:
         self.words = [w for w in self.words if w not in G_base]
 
         # Compute key terms that connect clusters
-        self.key = self.key(self.words, self.wfs, G_base, self.document.sentences)
+        key = self.key(self.words, self.wfs, G_base, self.document.sentences)
 
-        print(Util.pp(self.key))
+        print(Util.pp(key))
 
         # Sort terms in D by keys
-        high_key = sorted(self.key.items(), key=lambda x: x[1])
+        high_key = sorted(key.items(), key=lambda x: x[1])
         high_key = high_key[-K:]
         
         high_key = [k for k, f in high_key]
 
         # Calculate columns c(wi,wj)
-        self.C = self.C(high_key, G_base, self.document.sentences)
-        self.C.sort(key=lambda x: x[2])
+        C = self.C(high_key, G_base, self.document.sentences)
+        C.sort(key=lambda x: x[2])
 
         # Compute the top links between key terms (red nodes) and columns
-        self.G_C = [[i, j] for i, j, c in self.C[-K:]]
+        self.G_C = [[i, j] for i, j, c in C[-K:]]
                  
         # Prune the base by cutting non-redundant paths
         self.base_adj = self.adjacency_list(self.base, self.G_C)
