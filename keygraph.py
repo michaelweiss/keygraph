@@ -99,7 +99,17 @@ class KeyGraph:
         self.key = self.key(self.words, self.wfs, self.G_base, self.document.sentences)
 
         print(Util.pp(self.key))
+
+        # Sort terms in D by keys
+        self.high_key = sorted(self.key.items(), key=lambda x: x[1])
+        self.high_key = self.high_key[-K:]
         
+        self.high_key = [k for k, f in self.high_key]
+
+        # Calculate columns c(wi,wj)
+        self.C = self.C(self.high_key, self.G_base, self.document.sentences)
+        self.C.sort(key=lambda x: x[2])
+             
     # Compute key terms that connect clusters
     def key(self, words, wfs, base, sents):
         # key is a dictionary of the form　key = {w: key value}
@@ -150,21 +160,22 @@ class KeyGraph:
                 gws = wfs[g][s]
             fwg += wfs[w][s] * gws
         return fwg
-
-def C(hk, base, sents):
-    c = {}
-    for k in hk:
-        c[k] = {}
-        for b in base:
-            c[k][b] = 0
-            for s in sents:
-                c[k][b] += min(s.count(k), s.count(b))
-    c_list = [] 
-    for x in c.keys():
-        for y in c[x].keys():
-            c_list.append([x, y, c[x][y]])
-    c_list.sort(key=lambda a: a[2])
-    return c_list 
+    
+    # Calculate columns c(wi,wj)
+    def C(self, hk, base, sents):
+        c = {}
+        for k in hk:
+            c[k] = {}
+            for b in base:
+                c[k][b] = 0
+                for s in sents:
+                    c[k][b] += min(s.count(k), s.count(b))
+        c_list = [] 
+        for x in c.keys():
+            for y in c[x].keys():
+                c_list.append([x, y, c[x][y]])
+        c_list.sort(key=lambda a: a[2])
+        return c_list 
   
 # Prune graph by removing edges that connect clusters
 # That is, if the two ends of an edge are connected only by
@@ -277,19 +288,10 @@ if __name__ == "__main__":
     G_base = kg.G_base
                        
 #   Compute key (terms that tie and hold clusters together) 
-    key = kg.key
-        
-#   Sort terms in D by keys (produces list of terms ranked by their
-#   association with the cluster)
-    high_key = sorted(key.items(), key=lambda x: x[1])
-    high_key = high_key[-K:]
+    key = kg.key      
+    high_key = kg.high_key
+    C = kg.C
     
-    high_key = [k for k, f in high_key]
-    
-#	Calculate columns c(wi,wj)
-    C = C(high_key, G_base, sents)
-    C.sort(key=lambda x: x[2])
-     
 #   Compute the top links between key terms (red nodes) and clusters
     G_C = [[i, j] for i, j, c in C[-K:]]  
     
