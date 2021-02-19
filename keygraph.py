@@ -90,24 +90,24 @@ class KeyGraph:
 #   Compute hubs that connect words in the base
     def compute_hubs(self):
         # Extract nodes in the base
-        self.G_base = set([x for pair in self.base for x in pair])
+        G_base = set([x for pair in self.base for x in pair])
 
         # Remove high frequency words from G_base, leaving non-high frequency words
-        self.words = [w for w in self.words if w not in self.G_base]
+        self.words = [w for w in self.words if w not in G_base]
 
         # Compute key terms that connect clusters
-        self.key = self.key(self.words, self.wfs, self.G_base, self.document.sentences)
+        self.key = self.key(self.words, self.wfs, G_base, self.document.sentences)
 
         print(Util.pp(self.key))
 
         # Sort terms in D by keys
-        self.high_key = sorted(self.key.items(), key=lambda x: x[1])
-        self.high_key = self.high_key[-K:]
+        high_key = sorted(self.key.items(), key=lambda x: x[1])
+        high_key = high_key[-K:]
         
-        self.high_key = [k for k, f in self.high_key]
+        high_key = [k for k, f in high_key]
 
         # Calculate columns c(wi,wj)
-        self.C = self.C(self.high_key, self.G_base, self.document.sentences)
+        self.C = self.C(high_key, G_base, self.document.sentences)
         self.C.sort(key=lambda x: x[2])
 
         # Compute the top links between key terms (red nodes) and columns
