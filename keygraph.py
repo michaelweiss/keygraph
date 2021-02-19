@@ -109,7 +109,10 @@ class KeyGraph:
         # Calculate columns c(wi,wj)
         self.C = self.C(self.high_key, self.G_base, self.document.sentences)
         self.C.sort(key=lambda x: x[2])
-             
+
+        # Compute the top links between key terms (red nodes) and columns
+        self.G_C = [[i, j] for i, j, c in C[-K:]]
+                 
     # Compute key terms that connect clusters
     def key(self, words, wfs, base, sents):
         # key is a dictionary of the form　key = {w: key value}
@@ -291,15 +294,8 @@ if __name__ == "__main__":
     key = kg.key      
     high_key = kg.high_key
     C = kg.C
+    G_C = kg.C
     
-#   Compute the top links between key terms (red nodes) and clusters
-    G_C = [[i, j] for i, j, c in C[-K:]]  
-    
-    # for i, j in base:
-    #     print(i, j)
-    # for x, y in G_C:
-    #     print(x, y)
-
     base_adj = adjacency_dic(base, G_C, fname)
     
     pruned_base = prune(base, base_adj)
