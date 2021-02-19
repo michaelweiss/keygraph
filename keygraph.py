@@ -111,8 +111,12 @@ class KeyGraph:
         self.C.sort(key=lambda x: x[2])
 
         # Compute the top links between key terms (red nodes) and columns
-        self.G_C = [[i, j] for i, j, c in C[-K:]]
+        self.G_C = [[i, j] for i, j, c in self.C[-K:]]
                  
+        # Prune the base by cutting non-redundant paths
+        self.base_adj = self.adjacency_list(self.base, self.G_C)
+        self.base = self.prune(self.base, self.base_adj)
+        
     # Compute key terms that connect clusters
     def key(self, words, wfs, base, sents):
         # key is a dictionary of the form　key = {w: key value}
@@ -179,97 +183,98 @@ class KeyGraph:
                 c_list.append([x, y, c[x][y]])
         c_list.sort(key=lambda a: a[2])
         return c_list 
-  
-# Prune graph by removing edges that connect clusters
-# That is, if the two ends of an edge are connected only by
-# one edge, remove the edge to create two clusters
-def prune(base, base_adj):
-    new_base = []
-    for [i, j] in base:
-        if find_path(base_adj, i, j, [i, j], []):
-            print("find path:", [i, j])
-            new_base.append([i, j])
-        else:
-            print("no path found:", [i, j])
-    return new_base
-     
-# Find a path between two nodes that does not include edge
-# This won't necessarily return the best path, but is enough
-# to test whether there is a path
-# https://www.python.org/doc/essays/graphs/
-def find_path(graph, start, end, edge, path=[]):
-    path = path + [start]
-    if start == end:
-        return path
-    if not start in graph:
+    
+    # Create an adjacency list
+    def adjacency_list(self, base, G_C):
+        a_list = {}
+        
+        for i, j in base:
+            if i in a_list:
+                a_list[i].append([j,'base'])
+            else:
+                a_list[i] = [[j,'base']]
+            if j in a_list:
+                a_list[j].append([i,'base'])
+            else:
+                a_list[j] = [[i,'base']]
+        
+        for i, j in G_C:
+            if i in a_list:
+                a_list[i].append([j,'key'])
+            else:
+                a_list[i] = [[j,'key']]
+            if j in a_list:
+                a_list[j].append([i,'key'])
+            else:
+                a_list[j] = [[i,'key']]
+        
+        return a_list
+    
+    def save_adjacency_list(self, fname):
+        fout = codecs.open("./adjacency_list/" + fname + ".txt", "w", "utf-8")
+        fout.write(Util.pp(self.base_adj))
+        fout.close()
+    
+    # Prune graph by removing edges that connect clusters
+    # That is, if the two ends of an edge are connected only by
+    # one edge, remove the edge to create two clusters
+    def prune(self, base, base_adj):
+        new_base = []
+        for [i, j] in base:
+            if self.find_path(base_adj, i, j, [i, j], []):
+                print("find path:", [i, j])
+                new_base.append([i, j])
+            else:
+                print("no path found:", [i, j])
+        return new_base
+         
+    # Find a path between two nodes that does not include edge
+    # This won't necessarily return the best path, but is enough
+    # to test whether there is a path
+    # https://www.python.org/doc/essays/graphs/
+    def find_path(self, graph, start, end, edge, path=[]):
+        path = path + [start]
+        if start == end:
+            return path
+        if not start in graph:
+            return None
+        for node in [g[0] for g in graph[start] if g[1] == 'base']:
+            if (node not in path) and not([path[-1], node] == edge):
+                new_path = self.find_path(graph, node, end, edge, path)
+                if new_path:
+                    return new_path
         return None
-    for node in [g[0] for g in graph[start] if g[1] == 'base']:
-        if (node not in path) and not([path[-1], node] == edge):
-            new_path = find_path(graph, node, end, edge, path)
-            if new_path:
-                return new_path
-    return None
         
-# Draw keygraph in dot format
-def draw(base, G_C, fname):
-    fout = codecs.open("./dot/" + fname + ".dot","w","utf-8")
-    fout.write('graph keygraph {\n')
-    fout.write('graph [size="10,10"]\n')
-
-    g = []
-    for i, j in base:
-        g.append(i)
-        g.append(j)
-    for i in set(g):
-        fout.write(quote(i) + ' [color="black"]\n')
-    k = []
-    for i, j in G_C:
-        k.append(i)
-    for i in set(k):
-        fout.write(quote(i) + ' [color="red"]\n')
+    # Draw keygraph in dot format
+    def draw(self, base, G_C, fname):
+        fout = codecs.open("./dot/" + fname + ".dot","w","utf-8")
+        fout.write('graph keygraph {\n')
+        fout.write('graph [size="10,10"]\n')
+    
+        g = []
+        for i, j in base:
+            g.append(i)
+            g.append(j)
+        for i in set(g):
+            fout.write(self.quote(i) + ' [color="black"]\n')
+        k = []
+        for i, j in G_C:
+            k.append(i)
+        for i in set(k):
+            fout.write(self.quote(i) + ' [color="red"]\n')
+            
+        for i, j in base:
+            fout.write(self.quote(i) + '--' + self.quote(j) +'\n')
+        for i, j in G_C:
+            fout.write(self.quote(i) + '--' + self.quote(j) + ' [color="red", style="dotted"]\n')
+        fout.write('}')
+        fout.close()
         
-    for i, j in base:
-        fout.write(quote(i) + '--' + quote(j) +'\n')
-    for i, j in G_C:
-        fout.write(quote(i) + '--' + quote(j) + ' [color="red", style="dotted"]\n')
-    fout.write('}')
-    fout.close()
-    
-# Add optional quotes around a name
-def quote(name):
-    if 1 in [c in name for c in ['-', '/', '.', '\'']]:
-        return "\"{}\"".format(name)
-    return name
-
-# Create an adjacency list 
-def adjacency_dic(base, G_C, fname):
-    a_dic = {}
-     
-    for i,j in base:
-        if i in a_dic:
-            a_dic[i].append([j,'base'])
-        else:
-            a_dic[i] = [[j,'base']] 
-        if j in a_dic:
-            a_dic[j].append([i,'base'])
-        else:
-            a_dic[j] = [[i,'base']] 
-    
-    for i, j in G_C:
-        if i in a_dic:
-            a_dic[i].append([j,'key'])
-        else:
-            a_dic[i] = [[j,'key']] 
-        if j in a_dic:
-            a_dic[j].append([i,'key'])
-        else:
-            a_dic[j] = [[i,'key']] 
-
-    fout = codecs.open("./adjacency_list/" + fname + ".txt","w","utf-8")
-    fout.write(Util.pp(a_dic))
-    fout.close()
-    
-    return a_dic
+    # Add optional quotes around a name
+    def quote(self, name):
+        if 1 in [c in name for c in ['-', '/', '.', '\'']]:
+            return "\"{}\"".format(name)
+        return name
         
 #-----------Main----------------
 if __name__ == "__main__":
@@ -294,13 +299,10 @@ if __name__ == "__main__":
     key = kg.key      
     high_key = kg.high_key
     C = kg.C
-    G_C = kg.C
+    G_C = kg.G_C
     
-    base_adj = adjacency_dic(base, G_C, fname)
-    
-    pruned_base = prune(base, base_adj)
-    
-    draw(pruned_base, G_C, fname)
+    kg.save_adjacency_list(fname)
+    kg.draw(base, G_C, fname)
 
     etime = time.time()
     print("Execution time: %.4f seconds" % (etime - stime))
