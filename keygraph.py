@@ -40,24 +40,24 @@ class KeyGraph:
     def compute_base(self):
         # Sort words by their frequency (in ascending order)
         freq_count = self.document.freq_count()
-        self.words_freq = sorted(freq_count.items(), key=lambda x: x[1])
+        words_freq = sorted(freq_count.items(), key=lambda x: x[1])
         
         # Compute unique words        
-        self.words = [w for w, f in self.words_freq]
+        self.words = [w for w, f in words_freq]
         
         # Calculate word frequency in sentences
         self.wfs = self.calculate_wfs()
         
         # Determine high frequency words
-        hf = [w for w, f in self.words_freq[-M:]]
+        hf = [w for w, f in words_freq[-M:]]
 
         # Calculate co-occurrence degree of high-frequency words
-        self.co = self.calculate_co_occurrence(hf)
+        co = self.calculate_co_occurrence(hf)
         
-        print(Util.pp(self.co))
+        print(Util.pp(co))
 
         # Compute the base of G (links between black nodes)
-        return [[i, j] for i, j, c in self.co[-M:]]  
+        return [[i, j] for i, j, c in co[-M:]]  
     
 #   Calculate word frequency in sentences
     def calculate_wfs(self):
@@ -286,7 +286,6 @@ if __name__ == "__main__":
         
 #   Create a keygraph
     kg = KeyGraph(doc)
-                           
     kg.save_adjacency_list(fname)
     kg.draw(kg.base, kg.G_C, fname)
 
