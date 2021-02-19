@@ -33,8 +33,8 @@ class Util:
 class KeyGraph:
     def __init__(self, document, M=30, K=12):
         self.document = document
-        self.base = self.compute_base() # step 1
-        self.compute_hubs() # step 2
+        self.base = self.compute_base()
+        self.compute_hubs()
 
 #   Compute base of frequently co-occurring words
     def compute_base(self):
@@ -52,7 +52,9 @@ class KeyGraph:
         hf = [w for w, f in self.words_freq[-M:]]
 
         # Calculate co-occurrence degree of high-frequency words
-        self.co = self.calculate_co_occurrence(hf, self.document.sentences)
+        self.co = self.calculate_co_occurrence(hf)
+        
+        print(Util.pp(self.co))
 
         # Compute the base of G (links between black nodes)
         return [[i, j] for i, j, c in self.co[-M:]]  
@@ -68,13 +70,13 @@ class KeyGraph:
         return wfs
     
 #   Calculate co-occurrence degree of high-frequency words
-    def calculate_co_occurrence(self, hf, sents):
+    def calculate_co_occurrence(self, hf):
         co = {}
         for hf1 in hf:
             co[hf1] = {}
             for hf2 in hf[hf.index(hf1)+1:]:
                 co[hf1][hf2] = 0
-                for s in sents:
+                for s in self.document.sentences:
                     # Why sum products, not min, as in Ohsawa (1998)?
                     # co[hf1][hf2] += s.count(hf1) * s.count(hf2)
                     co[hf1][hf2] += min(s.count(hf1), s.count(hf2))
@@ -87,60 +89,67 @@ class KeyGraph:
  
 #   Compute hubs that connect words in the base
     def compute_hubs(self):
-        pass
-     
-# Compute key (terms that tie and hold clusters together) 
-def key(words, wfs, base, sents):
-    # key is a dictionary of the form　key = {w: key value}	
-    key = {}   
-    Fg = fg(words, wfs, base, sents)
-    for w in words:
-        product = 1.0
+        # Extract nodes in the base
+        self.G_base = set([x for pair in self.base for x in pair])
+
+        # Remove high frequency words from G_base, leaving non-high frequency words
+        self.words = [w for w in self.words if w not in self.G_base]
+
+        # Compute key terms that connect clusters
+        self.key = self.key(self.words, self.wfs, self.G_base, self.document.sentences)
+
+        print(Util.pp(self.key))
+        
+    # Compute key terms that connect clusters
+    def key(self, words, wfs, base, sents):
+        # key is a dictionary of the form　key = {w: key value}
+        key = {}
+        Fg = self.fg(words, wfs, base, sents)
+        for w in words:
+            product = 1.0
+            for g in base:
+                product *= 1 - self.fwg(w, wfs, g, sents)*(1.0)/Fg[g]
+            key[w] = 1.0 - product
+        return key
+    
+    # Calculate F(g)
+    # Neighbors(g) = count of terms in sentences including terms in cluster g
+    # g_s = count of cluster g in sentence s
+    # w_s = count of word w in sentence s (ie wfs[w][s])
+    def fg(self, words, wfs, base, sents):
+        fg = {}
         for g in base:
-            product *= 1 - fwg(w, wfs, g, sents)*(1.0)/Fg[g]
-#        print("product", product)
-        key[w] = 1.0 - product 
-        print("key[{}]".format(w), 1.0 - product, w)        
-    return key		
-
-# Calculate f(w,g)
-# Based(w, g) = how many times w appeared in D, based on the basic
-# concept represented by term g
-def fwg(w, wfs, g, sents):	
-    gws = 0
-    fwg = 0
-#    print("w", w, "g", g)
-    for s, sentence in enumerate(sents):
-#        print("sentence", sentence)
-        # Calculate |g-w|_s
-        # Count of cluster term g in s: g_s = wfs[g][s]
-        # Word in s: w_s = wfs[w][s]
-        if w == g: # w ∈ g
-#            print("|g-w|", g, wfs[g][s], w, wfs[w][s])
-            gws = wfs[g][s] - wfs[w][s]
-        else: # w not ∈ g
-#            print("|g|", g, wfs[g][s])
-            gws = wfs[g][s]
-        fwg += wfs[w][s] * gws
-    return fwg
-
-# Calculate F(g)
-# Neighbors(g) = count of terms in sentences including terms in cluster g
-# g_s = count of cluster g in sentence s
-# w_s = count of word w in sentence s (ie wfs[w][s])
-def fg(words, wfs, base, sents):
-    fg = {}
-    for g in base:
-        fg[g] = 0
+            fg[g] = 0
+            for s, sentence in enumerate(sents):
+                for w in sentence:
+                    if w == g: # w ∈ g
+    #                    print("|g-w|", g, wfs[g][s], w, wfs[w][s])
+                        fg[g] += wfs[g][s] - wfs[w][s]
+                    else: # w not ∈ g
+    #                    print("|g|", g, wfs[g][s])
+                        fg[g] += wfs[g][s]
+        return fg
+    
+    # Calculate f(w,g)
+    # Based(w, g) = how many times w appeared in D, based on the basic
+    # concept represented by term g
+    def fwg(self, w, wfs, g, sents):
+        gws = 0
+        fwg = 0
+    #    print("w", w, "g", g)
         for s, sentence in enumerate(sents):
-            for w in sentence:
-                if w == g: # w ∈ g
-#                    print("|g-w|", g, wfs[g][s], w, wfs[w][s])
-                    fg[g] += wfs[g][s] - wfs[w][s]
-                else: # w not ∈ g
-#                    print("|g|", g, wfs[g][s])
-                    fg[g] += wfs[g][s] 
-    return fg
+    #        print("sentence", sentence)
+            # Calculate |g-w|_s
+            # Count of cluster term g in s: g_s = wfs[g][s]
+            # Word in s: w_s = wfs[w][s]
+            if w == g: # w ∈ g
+    #            print("|g-w|", g, wfs[g][s], w, wfs[w][s])
+                gws = wfs[g][s] - wfs[w][s]
+            else: # w not ∈ g
+    #            print("|g|", g, wfs[g][s])
+                gws = wfs[g][s]
+            fwg += wfs[w][s] * gws
+        return fwg
 
 def C(hk, base, sents):
     c = {}
@@ -259,25 +268,17 @@ if __name__ == "__main__":
         
 #   Create a keygraph
     kg = KeyGraph(doc)
-    words_freq = kg.words_freq
-    words = kg.words
-    wfs = kg.wfs
-    co = kg.co
+    
+#    words_freq = kg.words_freq
+#    words = kg.words
+#    wfs = kg.wfs
+#    co = kg.co
     base = kg.base
-            
-#   Extract nodes in the base
-    G_base = set([x for pair in base for x in pair])
-    
-#   Remove high frequency words from, leaving non-high frequency words
-    words = [w for w in kg.words if w not in G_base]
-    
-    print(Util.pp(co))
-    print(Util.pp(G_base))
-    print(Util.pp(words))
-   
+    G_base = kg.G_base
+                       
 #   Compute key (terms that tie and hold clusters together) 
-    key = key(words, wfs, G_base, sents)
-
+    key = kg.key
+        
 #   Sort terms in D by keys (produces list of terms ranked by their
 #   association with the cluster)
     high_key = sorted(key.items(), key=lambda x: x[1])
@@ -305,4 +306,3 @@ if __name__ == "__main__":
 
     etime = time.time()
     print("Execution time: %.4f seconds" % (etime - stime))
-
