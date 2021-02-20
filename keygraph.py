@@ -8,9 +8,6 @@ import time
 
 from document import Document
  
-M = 12
-K = 12
-
 # sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
 # sys.stdin = codecs.getreader('utf_8')(sys.stdin)
 
@@ -33,11 +30,11 @@ class Util:
 class KeyGraph:
     def __init__(self, document, M=30, K=12):
         self.document = document
-        self.base = self.compute_base()
-        self.G_C = self.compute_hubs()
+        self.base = self.compute_base(M)
+        self.G_C = self.compute_hubs(K)
 
 #   Compute base of frequently co-occurring words
-    def compute_base(self):
+    def compute_base(self, M):
         # Sort words by their frequency (in ascending order)
         freq_count = self.document.freq_count()
         words_freq = sorted(freq_count.items(), key=lambda x: x[1])
@@ -88,7 +85,7 @@ class KeyGraph:
         return co_list
  
 #   Compute hubs that connect words in the base
-    def compute_hubs(self):
+    def compute_hubs(self, K):
         # Extract nodes in the base
         G_base = set([x for pair in self.base for x in pair])
 
@@ -287,7 +284,7 @@ if __name__ == "__main__":
     doc = Document(file_name = 'txt_files/' + fname + '.txt')
         
 #   Create a keygraph
-    kg = KeyGraph(doc)
+    kg = KeyGraph(doc, M=12, K=12)
     kg.save_adjacency_list(fname)
     kg.draw(fname)
 

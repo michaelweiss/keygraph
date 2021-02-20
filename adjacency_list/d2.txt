@@ -3,9 +3,9 @@
     'construction': [['customer', 'base'], ['company', 'base'], ['general', 'key'], ['price', 'key']],
     'customer': [['construction', 'base'], ['company', 'base'], ['market', 'base'], ['decrease', 'base'], ['induce', 'key'], ['general', 'key']],
     'decrease': [['market', 'base'], ['customer', 'base'], ['induce', 'key'], ['general', 'key']],
-    'general': [['customer', 'key'], ['market', 'key'], ['decrease', 'key'], ['construction', 'key']],
-    'induce': [['customer', 'key'], ['market', 'key'], ['decrease', 'key']],
+    'general': [['construction', 'key'], ['market', 'key'], ['customer', 'key'], ['decrease', 'key']],
+    'induce': [['market', 'key'], ['customer', 'key'], ['decrease', 'key']],
     'market': [['decrease', 'base'], ['customer', 'base'], ['induce', 'key'], ['general', 'key']],
-    'price': [['concrete', 'key'], ['steel', 'key'], ['construction', 'key'], ['company', 'key'], ['reduce', 'key']],
+    'price': [['company', 'key'], ['concrete', 'key'], ['construction', 'key'], ['steel', 'key'], ['reduce', 'key']],
     'reduce': [['concrete', 'base'], ['steel', 'base'], ['company', 'base'], ['price', 'key']],
     'steel': [['reduce', 'base'], ['concrete', 'base'], ['company', 'base'], ['price', 'key']]}
