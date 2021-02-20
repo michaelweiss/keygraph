@@ -34,7 +34,7 @@ class KeyGraph:
     def __init__(self, document, M=30, K=12):
         self.document = document
         self.base = self.compute_base()
-        self.compute_hubs()
+        self.G_C = self.compute_hubs()
 
 #   Compute base of frequently co-occurring words
     def compute_base(self):
@@ -96,7 +96,7 @@ class KeyGraph:
         self.words = [w for w in self.words if w not in G_base]
 
         # Compute key terms that connect clusters
-        key = self.key(self.words, self.wfs, G_base, self.document.sentences)
+        key = self.key(self.words, self.wfs, G_base)
 
         print(Util.pp(key))
 
@@ -106,26 +106,28 @@ class KeyGraph:
         
         high_key = [k for k, f in high_key]
 
-        # Calculate columns c(wi,wj)
-        C = self.C(high_key, G_base, self.document.sentences)
+        # Calculate columns
+        C = self.C(high_key, G_base)
         C.sort(key=lambda x: x[2])
 
         # Compute the top links between key terms (red nodes) and columns
-        self.G_C = [[i, j] for i, j, c in C[-K:]]
+        G_C = [[i, j] for i, j, c in C[-K:]]
                  
         # Prune the base by cutting non-redundant paths
-        self.base_adj = self.adjacency_list(self.base, self.G_C)
+        self.base_adj = self.adjacency_list(self.base, G_C)
         self.base = self.prune(self.base, self.base_adj)
         
+        return G_C
+        
     # Compute key terms that connect clusters
-    def key(self, words, wfs, base, sents):
+    def key(self, words, wfs, base):
         # key is a dictionary of the form　key = {w: key value}
         key = {}
-        Fg = self.fg(words, wfs, base, sents)
+        Fg = self.fg(words, wfs, base, self.document.sentences)
         for w in words:
             product = 1.0
             for g in base:
-                product *= 1 - self.fwg(w, wfs, g, sents)*(1.0)/Fg[g]
+                product *= 1 - self.fwg(w, wfs, g, self.document.sentences)*(1.0)/Fg[g]
             key[w] = 1.0 - product
         return key
     
@@ -169,13 +171,13 @@ class KeyGraph:
         return fwg
     
     # Calculate columns c(wi,wj)
-    def C(self, hk, base, sents):
+    def C(self, hk, base):
         c = {}
         for k in hk:
             c[k] = {}
             for b in base:
                 c[k][b] = 0
-                for s in sents:
+                for s in self.document.sentences:
                     c[k][b] += min(s.count(k), s.count(b))
         c_list = [] 
         for x in c.keys():
@@ -246,26 +248,26 @@ class KeyGraph:
         return None
         
     # Draw keygraph in dot format
-    def draw(self, base, G_C, fname):
+    def draw(self, fname):
         fout = codecs.open("./dot/" + fname + ".dot","w","utf-8")
         fout.write('graph keygraph {\n')
         fout.write('graph [size="10,10"]\n')
     
         g = []
-        for i, j in base:
+        for i, j in self.base:
             g.append(i)
             g.append(j)
         for i in set(g):
             fout.write(self.quote(i) + ' [color="black"]\n')
         k = []
-        for i, j in G_C:
+        for i, j in self.G_C:
             k.append(i)
         for i in set(k):
             fout.write(self.quote(i) + ' [color="red"]\n')
             
-        for i, j in base:
+        for i, j in self.base:
             fout.write(self.quote(i) + '--' + self.quote(j) +'\n')
-        for i, j in G_C:
+        for i, j in self.G_C:
             fout.write(self.quote(i) + '--' + self.quote(j) + ' [color="red", style="dotted"]\n')
         fout.write('}')
         fout.close()
@@ -287,7 +289,7 @@ if __name__ == "__main__":
 #   Create a keygraph
     kg = KeyGraph(doc)
     kg.save_adjacency_list(fname)
-    kg.draw(kg.base, kg.G_C, fname)
+    kg.draw(fname)
 
     etime = time.time()
     print("Execution time: %.4f seconds" % (etime - stime))
