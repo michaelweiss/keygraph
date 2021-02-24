@@ -6,6 +6,10 @@ import codecs
 import pprint
 import time
 
+import networkx as nx
+from networkx.algorithms.community.centrality import girvan_newman
+from networkx.algorithms.community.quality import modularity
+
 from document import Document
  
 # sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
@@ -54,7 +58,7 @@ class KeyGraph:
         print(Util.pp(co))
 
         # Compute the base of G (links between black nodes)
-        return [[i, j] for i, j, c in co[-M:]]  
+        return self.experimental_find_clusters([[i, j] for i, j, c in co[-M:]])
     
 #   Calculate word frequency in sentences
     def calculate_wfs(self):
@@ -106,13 +110,15 @@ class KeyGraph:
         # Calculate columns
         C = self.C(high_key, G_base)
         C.sort(key=lambda x: x[2])
+        
+        print(Util.pp(C))
 
         # Compute the top links between key terms (red nodes) and columns
         G_C = [[i, j] for i, j, c in C[-K:]]
                  
         # Prune the base by cutting non-redundant paths
         self.base_adj = self.adjacency_list(self.base, G_C)
-        self.base = self.prune(self.base, self.base_adj)
+        # self.base = self.prune(self.base, self.base_adj)
         
         return G_C
         
@@ -271,10 +277,30 @@ class KeyGraph:
         
     # Add optional quotes around a name
     def quote(self, name):
-        if 1 in [c in name for c in ['-', '/', '.', '\'']]:
+        if 1 in [c in name for c in ['-', '/', '.', '\'']] or name in ["graph"]:
             return "\"{}\"".format(name)
         return name
+    
+    # Detect communities in the base and remove edges between clusters
+    def experimental_find_clusters(self, base):
+        G = nx.Graph()
+        print("base", base)
+        for i, j in base:
+            G.add_edge(i, j)
         
+        communities = girvan_newman(G)
+        communities_by_quality = [(c, modularity(G, c)) for c in communities]
+        c_best = sorted([(c, m) for c, m in communities_by_quality], key=lambda x: x[1], reverse=True)
+        c_best = c_best[0][0]
+        # print(Util.pp(communities_by_quality))
+        print(modularity(G, c_best), c_best)
+        
+        for cluster in c_best:
+            print(G.subgraph(cluster).edges())
+        new_base = [edge for cluster in c_best for edge in G.subgraph(cluster).edges()]
+        
+        return new_base
+         
 #-----------Main----------------
 if __name__ == "__main__":
     stime = time.time() 
@@ -284,9 +310,9 @@ if __name__ == "__main__":
     doc = Document(file_name = 'txt_files/' + fname + '.txt')
         
 #   Create a keygraph
-    kg = KeyGraph(doc, M=12, K=12)
+    kg = KeyGraph(doc, M=20, K=8) # default: M=30, K=12
     kg.save_adjacency_list(fname)
     kg.draw(fname)
-
+    
     etime = time.time()
     print("Execution time: %.4f seconds" % (etime - stime))

@@ -1,49 +1,33 @@
 graph keygraph {
 graph [size="10,10"]
-use [color="black"]
-action [color="black"]
-approach [color="black"]
-propose [color="black"]
-game [color="black"]
-player [color="black"]
 cmds [color="black"]
-cluster [color="black"]
+action [color="black"]
 behavior [color="black"]
-first [color="red"]
-bartle [color="red"]
-apply [color="red"]
+use [color="black"]
+player [color="black"]
+game [color="black"]
+cluster [color="black"]
 keygraph [color="red"]
-locate [color="red"]
-input [color="red"]
-visualization [color="red"]
-game--behavior
-cluster--behavior
-approach--propose
-approach--use
-approach--player
-action--behavior
-propose--cmds
-propose--use
-propose--player
+propose [color="red"]
+base [color="red"]
+approach [color="red"]
 behavior--use
-cluster--use
-cmds--use
-action--player
-game--player
-cluster--player
-cmds--player
-use--player
 behavior--player
-first--cmds [color="red", style="dotted"]
-visualization--use [color="red", style="dotted"]
-bartle--player [color="red", style="dotted"]
-locate--player [color="red", style="dotted"]
-locate--cluster [color="red", style="dotted"]
-apply--technique [color="red", style="dotted"]
-apply--player [color="red", style="dotted"]
-keygraph--use [color="red", style="dotted"]
-keygraph--player [color="red", style="dotted"]
+use--cluster
+use--cmds
+use--player
+cluster--player
+player--action
+player--game
+player--cmds
 keygraph--cmds [color="red", style="dotted"]
 keygraph--behavior [color="red", style="dotted"]
-input--cmds [color="red", style="dotted"]
+keygraph--use [color="red", style="dotted"]
+keygraph--player [color="red", style="dotted"]
+approach--use [color="red", style="dotted"]
+approach--player [color="red", style="dotted"]
+propose--cmds [color="red", style="dotted"]
+propose--use [color="red", style="dotted"]
+propose--player [color="red", style="dotted"]
+base--player [color="red", style="dotted"]
 }
