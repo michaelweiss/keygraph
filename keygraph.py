@@ -58,7 +58,7 @@ class KeyGraph:
         print(Util.pp(co))
 
         # Compute the base of G (links between black nodes)
-        return self.experimental_find_clusters([[i, j] for i, j, c in co[-M:]])
+        return self.find_clusters([[i, j] for i, j, c in co[-M:]])
     
 #   Calculate word frequency in sentences
     def calculate_wfs(self):
@@ -282,7 +282,7 @@ class KeyGraph:
         return name
     
     # Detect communities in the base and remove edges between clusters
-    def experimental_find_clusters(self, base):
+    def find_clusters(self, base):
         G = nx.Graph()
         print("base", base)
         for i, j in base:
@@ -295,8 +295,10 @@ class KeyGraph:
         # print(Util.pp(communities_by_quality))
         print(modularity(G, c_best), c_best)
         
-        for cluster in c_best:
-            print(G.subgraph(cluster).edges())
+        self.clusters = c_best
+
+        # for cluster in c_best:
+        #     print(G.subgraph(cluster).edges())
         new_base = [edge for cluster in c_best for edge in G.subgraph(cluster).edges()]
         
         return new_base
@@ -310,7 +312,9 @@ if __name__ == "__main__":
     doc = Document(file_name = 'txt_files/' + fname + '.txt')
         
 #   Create a keygraph
-    kg = KeyGraph(doc, M=20, K=8) # default: M=30, K=12
+    kg = KeyGraph(doc, M=20, K=12) # default: M=30, K=12
+    print("clusters", kg.clusters)
+
     kg.save_adjacency_list(fname)
     kg.draw(fname)
     
