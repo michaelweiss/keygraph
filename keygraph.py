@@ -54,11 +54,14 @@ class KeyGraph:
 
         # Calculate co-occurrence degree of high-frequency words
         co = self.calculate_co_occurrence(hf)
-        
+
+        # Keep only the tightest links
+        co = [[i, j] for i, j, c in co[-M:]]
+
         print(Util.pp(co))
 
         # Compute the base of G (links between black nodes)
-        return self.find_clusters([[i, j] for i, j, c in co[-M:]])
+        return self.find_clusters(co)
     
 #   Calculate word frequency in sentences
     def calculate_wfs(self):
@@ -101,6 +104,8 @@ class KeyGraph:
 
         print(Util.pp(key))
 
+        sys.exit()
+
         # Sort terms in D by keys
         high_key = sorted(key.items(), key=lambda x: x[1])
         high_key = high_key[-K:]
@@ -126,6 +131,19 @@ class KeyGraph:
     def key(self, words, wfs, base):
         # key is a dictionary of the form　key = {w: key value}
         key = {}
+        for w in words:
+            print("keyword: {}".format(w))
+            for g in self.clusters:
+                print("g", g)
+                neighbors = self.neighbors(g, self.document.sentences, wfs)
+                print("neighbors", neighbors)
+                # produces the same result as sum(f_g), where:
+                # f_g = self.fg(words, wfs, g, self.document.sentences)
+                # print("f_g", f_g)
+
+    def key2(self, words, wfs, base):
+        # key is a dictionary of the form　key = {w: key value}
+        key = {}
         Fg = self.fg(words, wfs, base, self.document.sentences)
         for w in words:
             product = 1.0
@@ -133,6 +151,25 @@ class KeyGraph:
                 product *= 1 - self.fwg(w, wfs, g, self.document.sentences)*(1.0)/Fg[g]
             key[w] = 1.0 - product
         return key
+
+    # Count of words in sentences including words in cluster g 
+    def neighbors(self, g, sents, wfs):
+        neighbors = 0
+        for s, sentence in enumerate(sents):
+            g_s = 0
+            for w in g:
+                g_s += wfs[w][s]
+            print("g_s", g_s)
+            for w in sentence:
+                print(s, w)
+                w_s = wfs[w][s]
+                if w in g:
+                    print("w in g")
+                    neighbors += + w_s * (g_s - w_s)
+                else:
+                    print("w not in g")
+                    neighbors += w_s * g_s
+        return neighbors
     
     # Calculate F(g)
     # Neighbors(g) = count of terms in sentences including terms in cluster g
@@ -152,6 +189,11 @@ class KeyGraph:
                         fg[g] += wfs[g][s]
         return fg
     
+    # Count how many times w appeared in D based on concept represented by cluster g
+    def based(self, w, g):
+        based = 0
+        return based
+
     # Calculate f(w,g)
     # Based(w, g) = how many times w appeared in D, based on the basic
     # concept represented by term g
@@ -284,7 +326,6 @@ class KeyGraph:
     # Detect communities in the base and remove edges between clusters
     def find_clusters(self, base):
         G = nx.Graph()
-        print("base", base)
         for i, j in base:
             G.add_edge(i, j)
         
@@ -293,9 +334,10 @@ class KeyGraph:
         c_best = sorted([(c, m) for c, m in communities_by_quality], key=lambda x: x[1], reverse=True)
         c_best = c_best[0][0]
         # print(Util.pp(communities_by_quality))
-        print(modularity(G, c_best), c_best)
+        print("clusters", modularity(G, c_best), c_best)
         
-        self.clusters = c_best
+        # only include clusters of more than one node (for now)
+        self.clusters = [c for c in c_best if len(c) > 1]
 
         # for cluster in c_best:
         #     print(G.subgraph(cluster).edges())
@@ -312,7 +354,7 @@ if __name__ == "__main__":
     doc = Document(file_name = 'txt_files/' + fname + '.txt')
         
 #   Create a keygraph
-    kg = KeyGraph(doc, M=20, K=12) # default: M=30, K=12
+    kg = KeyGraph(doc, M=12, K=8) # default: M=30, K=12
     print("clusters", kg.clusters)
 
     kg.save_adjacency_list(fname)

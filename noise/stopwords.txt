@@ -6,3 +6,5 @@ way
 use
 want
 may
+yes
+bad

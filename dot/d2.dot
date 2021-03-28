@@ -1,17 +1,17 @@
 graph keygraph {
 graph [size="10,10"]
-decrease [color="black"]
-market [color="black"]
+company [color="black"]
+construction [color="black"]
+power [color="black"]
 steel [color="black"]
+market [color="black"]
+decrease [color="black"]
 reduce [color="black"]
 concrete [color="black"]
-power [color="black"]
 customer [color="black"]
-construction [color="black"]
-company [color="black"]
-induce [color="red"]
 general [color="red"]
 price [color="red"]
+induce [color="red"]
 company--power
 company--concrete
 company--steel
@@ -20,22 +20,22 @@ power--reduce
 reduce--concrete
 reduce--steel
 concrete--steel
-customer--construction
-customer--market
-customer--decrease
-construction--market
-construction--decrease
+decrease--construction
 decrease--market
-induce--decrease [color="red", style="dotted"]
+decrease--customer
+construction--market
+construction--customer
+customer--market
 induce--market [color="red", style="dotted"]
+induce--decrease [color="red", style="dotted"]
 induce--customer [color="red", style="dotted"]
-general--decrease [color="red", style="dotted"]
-general--market [color="red", style="dotted"]
-general--customer [color="red", style="dotted"]
 general--construction [color="red", style="dotted"]
+general--market [color="red", style="dotted"]
+general--decrease [color="red", style="dotted"]
+general--customer [color="red", style="dotted"]
+price--company [color="red", style="dotted"]
+price--construction [color="red", style="dotted"]
 price--steel [color="red", style="dotted"]
 price--reduce [color="red", style="dotted"]
 price--concrete [color="red", style="dotted"]
-price--construction [color="red", style="dotted"]
-price--company [color="red", style="dotted"]
 }
