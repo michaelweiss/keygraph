@@ -100,7 +100,7 @@ class KeyGraph:
         self.words = [w for w in self.words if w not in G_base]
 
         # Compute key terms that connect clusters
-        key = self.key(self.words, self.wfs, G_base)
+        key = self.key(self.words)
 
         print(Util.pp(key))
 
@@ -127,7 +127,7 @@ class KeyGraph:
         return G_C
         
     # Compute key terms that connect clusters
-    def key(self, words, wfs, base):
+    def key(self, words):
         # key is a dictionary of the form　key = {w: key value}
         key = {}
         for w in words:
@@ -135,28 +135,28 @@ class KeyGraph:
             product = 1.0
             for g in self.clusters:
                 print("g", g)
-                neighbors = self.neighbors(g, self.document.sentences, wfs)
+                neighbors = self.neighbors(g)
                 print("neighbors", neighbors)
                 # produces the same result as sum(f_g), where:
                 # f_g = self.fg(words, wfs, g, self.document.sentences)
                 # print("f_g", f_g)
-                based = self.based(w, g, self.document.sentences, wfs)
+                based = self.based(w, g)
                 print("based", based)
                 product *= 1 - based/neighbors
             key[w] = 1.0 - product
         return key
 
     # Count of words in sentences including words in cluster g 
-    def neighbors(self, g, sents, wfs):
+    def neighbors(self, g):
         neighbors = 0
-        for s, sentence in enumerate(sents):
+        for s, sentence in enumerate(self.document.sentences):
             g_s = 0
             for t in g:
-                g_s += wfs[t][s]
+                g_s += self.wfs[t][s]
             # print("g_s", g_s)
             for w in sentence:
                 # print(s, w)
-                w_s = wfs[w][s]
+                w_s = self.wfs[w][s]
                 if w in g:
                     # print("w in g")
                     neighbors += + w_s * (g_s - w_s)
@@ -166,15 +166,15 @@ class KeyGraph:
         return neighbors
         
     # Count how many times w appeared in D based on concept represented by cluster g
-    def based(self, w, g, sents, wfs):
+    def based(self, w, g):
         based = 0
-        for s, sentence in enumerate(sents):
+        for s, sentence in enumerate(self.document.sentences):
             # print(s, w)
             g_s = 0
             for t in g:
-                g_s += wfs[t][s]
+                g_s += self.wfs[t][s]
             # print("g_s", g_s)
-            w_s = wfs[w][s]
+            w_s = self.wfs[w][s]
             if w in g:
                 # print("w in g")
                 based += + w_s * (g_s - w_s)
