@@ -121,9 +121,8 @@ class KeyGraph:
         # Compute the top links between key terms (red nodes) and columns
         G_C = [[i, j] for i, j, c in C[-K:]]
                  
-        # Prune the base by cutting non-redundant paths
+        # Comput adjacency list
         self.base_adj = self.adjacency_list(self.base, G_C)
-        # self.base = self.prune(self.base, self.base_adj)
         
         return G_C
         
@@ -231,36 +230,6 @@ class KeyGraph:
         fout.write(Util.pp(self.base_adj))
         fout.close()
     
-    # Prune graph by removing edges that connect clusters
-    # That is, if the two ends of an edge are connected only by
-    # one edge, remove the edge to create two clusters
-    def prune(self, base, base_adj):
-        new_base = []
-        for [i, j] in base:
-            if self.find_path(base_adj, i, j, [i, j], []):
-                print("find path:", [i, j])
-                new_base.append([i, j])
-            else:
-                print("no path found:", [i, j])
-        return new_base
-         
-    # Find a path between two nodes that does not include edge
-    # This won't necessarily return the best path, but is enough
-    # to test whether there is a path
-    # https://www.python.org/doc/essays/graphs/
-    def find_path(self, graph, start, end, edge, path=[]):
-        path = path + [start]
-        if start == end:
-            return path
-        if not start in graph:
-            return None
-        for node in [g[0] for g in graph[start] if g[1] == 'base']:
-            if (node not in path) and not([path[-1], node] == edge):
-                new_path = self.find_path(graph, node, end, edge, path)
-                if new_path:
-                    return new_path
-        return None
-        
     # Draw keygraph in dot format
     def draw(self, fname):
         fout = codecs.open("./dot/" + fname + ".dot","w","utf-8")
