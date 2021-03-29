@@ -133,6 +133,7 @@ class KeyGraph:
         key = {}
         for w in words:
             print("keyword: {}".format(w))
+            product = 1.0
             for g in self.clusters:
                 print("g", g)
                 neighbors = self.neighbors(g, self.document.sentences, wfs)
@@ -140,6 +141,8 @@ class KeyGraph:
                 # produces the same result as sum(f_g), where:
                 # f_g = self.fg(words, wfs, g, self.document.sentences)
                 # print("f_g", f_g)
+                based = self.based(w, g, self.document.sentences, wfs)
+                print("based", based)
 
     def key2(self, words, wfs, base):
         # key is a dictionary of the form　key = {w: key value}
@@ -157,17 +160,17 @@ class KeyGraph:
         neighbors = 0
         for s, sentence in enumerate(sents):
             g_s = 0
-            for w in g:
-                g_s += wfs[w][s]
-            print("g_s", g_s)
+            for t in g:
+                g_s += wfs[t][s]
+            # print("g_s", g_s)
             for w in sentence:
-                print(s, w)
+                # print(s, w)
                 w_s = wfs[w][s]
                 if w in g:
-                    print("w in g")
+                    # print("w in g")
                     neighbors += + w_s * (g_s - w_s)
                 else:
-                    print("w not in g")
+                    # print("w not in g")
                     neighbors += w_s * g_s
         return neighbors
     
@@ -190,8 +193,21 @@ class KeyGraph:
         return fg
     
     # Count how many times w appeared in D based on concept represented by cluster g
-    def based(self, w, g):
+    def based(self, w, g, sents, wfs):
         based = 0
+        for s, sentence in enumerate(sents):
+            # print(s, w)
+            g_s = 0
+            for t in g:
+                g_s += wfs[t][s]
+            # print("g_s", g_s)
+            w_s = wfs[w][s]
+            if w in g:
+                # print("w in g")
+                based += + w_s * (g_s - w_s)
+            else:
+                # print("w not in g")
+                based += w_s * g_s
         return based
 
     # Calculate f(w,g)
