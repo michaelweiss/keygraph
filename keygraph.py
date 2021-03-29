@@ -90,6 +90,28 @@ class KeyGraph:
                 co_list.append([x, y, co[x][y]])
         co_list.sort(key=lambda a: a[2])
         return co_list
+
+#   Detect communities in the base and remove edges between clusters
+    def find_clusters(self, base):
+        G = nx.Graph()
+        for i, j in base:
+            G.add_edge(i, j)
+        
+        communities = girvan_newman(G)
+        communities_by_quality = [(c, modularity(G, c)) for c in communities]
+        c_best = sorted([(c, m) for c, m in communities_by_quality], key=lambda x: x[1], reverse=True)
+        c_best = c_best[0][0]
+        # print(Util.pp(communities_by_quality))
+        print("clusters", modularity(G, c_best), c_best)
+        
+        # only include clusters of more than one node (for now)
+        self.clusters = [c for c in c_best if len(c) > 1]
+
+        # for cluster in c_best:
+        #     print(G.subgraph(cluster).edges())
+        new_base = [edge for cluster in c_best for edge in G.subgraph(cluster).edges()]
+        
+        return new_base
  
 #   Compute hubs that connect words in the base
     def compute_hubs(self, K):
@@ -260,29 +282,7 @@ class KeyGraph:
         if 1 in [c in name for c in ['-', '/', '.', '\'']] or name in ["graph"]:
             return "\"{}\"".format(name)
         return name
-    
-    # Detect communities in the base and remove edges between clusters
-    def find_clusters(self, base):
-        G = nx.Graph()
-        for i, j in base:
-            G.add_edge(i, j)
-        
-        communities = girvan_newman(G)
-        communities_by_quality = [(c, modularity(G, c)) for c in communities]
-        c_best = sorted([(c, m) for c, m in communities_by_quality], key=lambda x: x[1], reverse=True)
-        c_best = c_best[0][0]
-        # print(Util.pp(communities_by_quality))
-        print("clusters", modularity(G, c_best), c_best)
-        
-        # only include clusters of more than one node (for now)
-        self.clusters = [c for c in c_best if len(c) > 1]
-
-        # for cluster in c_best:
-        #     print(G.subgraph(cluster).edges())
-        new_base = [edge for cluster in c_best for edge in G.subgraph(cluster).edges()]
-        
-        return new_base
-         
+             
 #-----------Main----------------
 if __name__ == "__main__":
     stime = time.time() 
