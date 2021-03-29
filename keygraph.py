@@ -147,17 +147,6 @@ class KeyGraph:
             key[w] = 1.0 - product
         return key
 
-    def key2(self, words, wfs, base):
-        # key is a dictionary of the form　key = {w: key value}
-        key = {}
-        Fg = self.fg(words, wfs, base, self.document.sentences)
-        for w in words:
-            product = 1.0
-            for g in base:
-                product *= 1 - self.fwg(w, wfs, g, self.document.sentences)*(1.0)/Fg[g]
-            key[w] = 1.0 - product
-        return key
-
     # Count of words in sentences including words in cluster g 
     def neighbors(self, g, sents, wfs):
         neighbors = 0
@@ -176,25 +165,7 @@ class KeyGraph:
                     # print("w not in g")
                     neighbors += w_s * g_s
         return neighbors
-    
-    # Calculate F(g)
-    # Neighbors(g) = count of terms in sentences including terms in cluster g
-    # g_s = count of cluster g in sentence s
-    # w_s = count of word w in sentence s (ie wfs[w][s])
-    def fg(self, words, wfs, base, sents):
-        fg = {}
-        for g in base:
-            fg[g] = 0
-            for s, sentence in enumerate(sents):
-                for w in sentence:
-                    if w == g: # w ∈ g
-    #                    print("|g-w|", g, wfs[g][s], w, wfs[w][s])
-                        fg[g] += wfs[g][s] - wfs[w][s]
-                    else: # w not ∈ g
-    #                    print("|g|", g, wfs[g][s])
-                        fg[g] += wfs[g][s]
-        return fg
-    
+        
     # Count how many times w appeared in D based on concept represented by cluster g
     def based(self, w, g, sents, wfs):
         based = 0
@@ -212,27 +183,6 @@ class KeyGraph:
                 # print("w not in g")
                 based += w_s * g_s
         return based
-
-    # Calculate f(w,g)
-    # Based(w, g) = how many times w appeared in D, based on the basic
-    # concept represented by term g
-    def fwg(self, w, wfs, g, sents):
-        gws = 0
-        fwg = 0
-    #    print("w", w, "g", g)
-        for s, sentence in enumerate(sents):
-    #        print("sentence", sentence)
-            # Calculate |g-w|_s
-            # Count of cluster term g in s: g_s = wfs[g][s]
-            # Word in s: w_s = wfs[w][s]
-            if w == g: # w ∈ g
-    #            print("|g-w|", g, wfs[g][s], w, wfs[w][s])
-                gws = wfs[g][s] - wfs[w][s]
-            else: # w not ∈ g
-    #            print("|g|", g, wfs[g][s])
-                gws = wfs[g][s]
-            fwg += wfs[w][s] * gws
-        return fwg
     
     # Calculate columns c(wi,wj)
     def C(self, hk, base):
