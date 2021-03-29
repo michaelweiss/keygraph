@@ -143,6 +143,9 @@ class KeyGraph:
                 # print("f_g", f_g)
                 based = self.based(w, g, self.document.sentences, wfs)
                 print("based", based)
+                product *= 1 - based/neighbors
+            key[w] = 1.0 - product
+        return key
 
     def key2(self, words, wfs, base):
         # key is a dictionary of the form　key = {w: key value}
