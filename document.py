@@ -8,8 +8,8 @@ class Document:
     def __init__(self, content = "", file_name = None):
         self.content = self.read_from_file(file_name) if file_name else content
         self.stopwords = self.read_stopwords()
-        self.tokens = self.create_tokens()
         self.sentences = self.create_sentences()
+        self.tokens = self.create_tokens()
     
     # Read content from file
     def read_from_file(self, file_name):
@@ -26,6 +26,10 @@ class Document:
         symbols = ["'", '"', '“', '”', '`', '’', '.', ',', '-', '!', '?', ':', ';', '(', ')', '[', ']', '&', '0', '%', '...', '--']
         return stopwords + symbols
 
+    # Divide into sentences
+    def create_sentences(self):
+        return [self.create_tokens_from(s) for s in nltk.tokenize.sent_tokenize(self.content)]
+
     # Divide a string into tokens
     def create_tokens_from(self, s, lemmatized=True, strip_stopwords=True):
         tokens = [t.lower() for t in nltk.tokenize.word_tokenize(s)]
@@ -38,11 +42,7 @@ class Document:
         
     # Divide into tokens
     def create_tokens(self):
-        return self.create_tokens_from(self.content)
-
-    # Divide into sentences
-    def create_sentences(self):
-        return [self.create_tokens_from(s) for s in nltk.tokenize.sent_tokenize(self.content)]
+        return [t for s in self.sentences for t in s]
 
     # Lemmatize words
     def lemmatize(self, tokens):
