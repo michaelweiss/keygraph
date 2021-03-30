@@ -48,6 +48,9 @@ class KeyGraph:
         
         # Calculate word frequency in sentences
         self.wfs = self.calculate_wfs()
+
+        print(Util.pp(self.wfs))
+        print(Util.pp(self.document.sentences))
         
         # Determine high frequency words
         hf = [w for w, f in words_freq[-M:]]
@@ -126,24 +129,23 @@ class KeyGraph:
 
         print(Util.pp(key))
 
-        sys.exit()
-
         # Sort terms in D by keys
         high_key = sorted(key.items(), key=lambda x: x[1])
         high_key = high_key[-K:]
         
         high_key = [k for k, f in high_key]
 
+        print(Util.pp(high_key))
+
         # Calculate columns
-        C = self.C(high_key, G_base)
-        C.sort(key=lambda x: x[2])
+        C = self.columns(high_key, G_base)
         
         print(Util.pp(C))
 
         # Compute the top links between key terms (red nodes) and columns
         G_C = [[i, j] for i, j, c in C[-K:]]
-                 
-        # Comput adjacency list
+                
+        # Compute adjacency list
         self.base_adj = self.adjacency_list(self.base, G_C)
         
         return G_C
@@ -199,14 +201,14 @@ class KeyGraph:
             w_s = self.wfs[w][s]
             if w in g:
                 # print("w in g")
-                based += + w_s * (g_s - w_s)
+                based += w_s * (g_s - w_s)
             else:
                 # print("w not in g")
                 based += w_s * g_s
         return based
     
     # Calculate columns c(wi,wj)
-    def C(self, hk, base):
+    def columns(self, hk, base):
         c = {}
         for k in hk:
             c[k] = {}
@@ -214,10 +216,25 @@ class KeyGraph:
                 c[k][b] = 0
                 for s in self.document.sentences:
                     c[k][b] += min(s.count(k), s.count(b))
+        n_clusters = {}
+        for k in c.keys():
+            print("k", k)
+            n_clusters[k] = 0
+            for g in self.clusters:
+                print("g", g)
+                in_cluster = 0
+                for b in c[k].keys():
+                    print("b", b)
+                    if c[k][b] > 0 and b in g:
+                        print("b in g")
+                        in_cluster = 1
+                n_clusters[k] += in_cluster
+        print(Util.pp(n_clusters))
         c_list = [] 
-        for x in c.keys():
-            for y in c[x].keys():
-                c_list.append([x, y, c[x][y]])
+        for k in c.keys():
+            for b in c[k].keys():
+                if n_clusters[k] > 1 and c[k][b] > 0:
+                    c_list.append([k, b, c[k][b]])
         c_list.sort(key=lambda a: a[2])
         return c_list 
     
@@ -292,7 +309,7 @@ if __name__ == "__main__":
     doc = Document(file_name = 'txt_files/' + fname + '.txt')
         
 #   Create a keygraph
-    kg = KeyGraph(doc, M=12, K=8) # default: M=30, K=12
+    kg = KeyGraph(doc, M=20, K=12) # default: M=30, K=12
     print("clusters", kg.clusters)
 
     kg.save_adjacency_list(fname)

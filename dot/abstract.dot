@@ -1,33 +1,30 @@
 graph keygraph {
 graph [size="10,10"]
-cmds [color="black"]
-action [color="black"]
-behavior [color="black"]
-use [color="black"]
-player [color="black"]
 game [color="black"]
+behavior [color="black"]
+cmds [color="black"]
+player [color="black"]
+propose [color="black"]
+action [color="black"]
 cluster [color="black"]
-keygraph [color="red"]
-propose [color="red"]
-base [color="red"]
 approach [color="red"]
-behavior--use
+keygraph [color="red"]
+input [color="red"]
+base [color="red"]
+action--behavior
+action--player
+game--behavior
+game--player
+behavior--cluster
 behavior--player
-use--cluster
-use--cmds
-use--player
 cluster--player
-player--action
-player--game
-player--cmds
-keygraph--cmds [color="red", style="dotted"]
+propose--cmds
+base--action [color="red", style="dotted"]
 keygraph--behavior [color="red", style="dotted"]
-keygraph--use [color="red", style="dotted"]
+keygraph--cmds [color="red", style="dotted"]
 keygraph--player [color="red", style="dotted"]
-approach--use [color="red", style="dotted"]
+input--cmds [color="red", style="dotted"]
 approach--player [color="red", style="dotted"]
-propose--cmds [color="red", style="dotted"]
-propose--use [color="red", style="dotted"]
-propose--player [color="red", style="dotted"]
+approach--propose [color="red", style="dotted"]
 base--player [color="red", style="dotted"]
 }

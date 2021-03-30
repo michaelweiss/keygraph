@@ -1,17 +1,18 @@
 graph keygraph {
 graph [size="10,10"]
-company [color="black"]
-construction [color="black"]
-power [color="black"]
-steel [color="black"]
-market [color="black"]
-decrease [color="black"]
-reduce [color="black"]
-concrete [color="black"]
 customer [color="black"]
-general [color="red"]
+construction [color="black"]
+concrete [color="black"]
+reduce [color="black"]
+decrease [color="black"]
+steel [color="black"]
+company [color="black"]
+market [color="black"]
+power [color="black"]
+satisfy [color="red"]
+introduce [color="red"]
 price [color="red"]
-induce [color="red"]
+restructure [color="red"]
 company--power
 company--concrete
 company--steel
@@ -20,22 +21,21 @@ power--reduce
 reduce--concrete
 reduce--steel
 concrete--steel
+market--construction
+market--decrease
+market--customer
 decrease--construction
-decrease--market
 decrease--customer
-construction--market
 construction--customer
-customer--market
-induce--market [color="red", style="dotted"]
-induce--decrease [color="red", style="dotted"]
-induce--customer [color="red", style="dotted"]
-general--construction [color="red", style="dotted"]
-general--market [color="red", style="dotted"]
-general--decrease [color="red", style="dotted"]
-general--customer [color="red", style="dotted"]
-price--company [color="red", style="dotted"]
+introduce--customer [color="red", style="dotted"]
+introduce--company [color="red", style="dotted"]
+restructure--customer [color="red", style="dotted"]
+restructure--company [color="red", style="dotted"]
+satisfy--customer [color="red", style="dotted"]
+satisfy--company [color="red", style="dotted"]
 price--construction [color="red", style="dotted"]
-price--steel [color="red", style="dotted"]
-price--reduce [color="red", style="dotted"]
 price--concrete [color="red", style="dotted"]
+price--reduce [color="red", style="dotted"]
+price--steel [color="red", style="dotted"]
+price--company [color="red", style="dotted"]
 }
