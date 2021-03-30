@@ -273,7 +273,7 @@ class KeyGraph:
     def draw(self, fname):
         fout = codecs.open("./dot/" + fname + ".dot","w","utf-8")
         fout.write('graph keygraph {\n')
-        fout.write('graph [size="10,10"]\n')
+        fout.write('graph [size="10,10", overlap="scale"]\n')
     
         g = []
         for i, j in self.base:
@@ -309,7 +309,7 @@ if __name__ == "__main__":
     doc = Document(file_name = 'txt_files/' + fname + '.txt')
         
 #   Create a keygraph
-    kg = KeyGraph(doc, M=20, K=12) # default: M=30, K=12
+    kg = KeyGraph(doc, M=30, K=12) # default: M=30, K=12
     print("clusters", kg.clusters)
 
     kg.save_adjacency_list(fname)

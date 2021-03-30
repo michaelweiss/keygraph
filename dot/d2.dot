@@ -1,41 +1,32 @@
 graph keygraph {
-graph [size="10,10"]
+graph [size="10,10", overlap="scale"]
 customer [color="black"]
-construction [color="black"]
+steel [color="black"]
 concrete [color="black"]
 reduce [color="black"]
-decrease [color="black"]
-steel [color="black"]
-company [color="black"]
 market [color="black"]
-power [color="black"]
-satisfy [color="red"]
-introduce [color="red"]
+construction [color="black"]
+company [color="black"]
+decrease [color="black"]
 price [color="red"]
+satisfy [color="red"]
 restructure [color="red"]
-company--power
+construction--customer
+customer--market
+customer--decrease
+market--decrease
 company--concrete
 company--steel
 company--reduce
-power--reduce
-reduce--concrete
-reduce--steel
+concrete--reduce
 concrete--steel
-market--construction
-market--decrease
-market--customer
-decrease--construction
-decrease--customer
-construction--customer
-introduce--customer [color="red", style="dotted"]
-introduce--company [color="red", style="dotted"]
-restructure--customer [color="red", style="dotted"]
+reduce--steel
 restructure--company [color="red", style="dotted"]
 satisfy--customer [color="red", style="dotted"]
 satisfy--company [color="red", style="dotted"]
-price--construction [color="red", style="dotted"]
+price--steel [color="red", style="dotted"]
 price--concrete [color="red", style="dotted"]
 price--reduce [color="red", style="dotted"]
-price--steel [color="red", style="dotted"]
+price--construction [color="red", style="dotted"]
 price--company [color="red", style="dotted"]
 }
