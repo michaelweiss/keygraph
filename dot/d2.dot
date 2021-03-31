@@ -1,32 +1,41 @@
 graph keygraph {
 graph [size="10,10", overlap="scale"]
-customer [color="black"]
+construction [color="black"]
 steel [color="black"]
 concrete [color="black"]
-reduce [color="black"]
+customer [color="black"]
 market [color="black"]
-construction [color="black"]
+power [color="black"]
+reduce [color="black"]
 company [color="black"]
 decrease [color="black"]
-price [color="red"]
-satisfy [color="red"]
+introduce [color="red"]
 restructure [color="red"]
-construction--customer
-customer--market
-customer--decrease
-market--decrease
+satisfy [color="red"]
+price [color="red"]
+company--power
 company--concrete
 company--steel
 company--reduce
-concrete--reduce
-concrete--steel
+power--reduce
+reduce--concrete
 reduce--steel
+concrete--steel
+customer--construction
+customer--market
+customer--decrease
+decrease--construction
+decrease--market
+construction--market
+introduce--customer [color="red", style="dotted"]
+introduce--company [color="red", style="dotted"]
+restructure--customer [color="red", style="dotted"]
 restructure--company [color="red", style="dotted"]
 satisfy--customer [color="red", style="dotted"]
 satisfy--company [color="red", style="dotted"]
+price--construction [color="red", style="dotted"]
 price--steel [color="red", style="dotted"]
 price--concrete [color="red", style="dotted"]
 price--reduce [color="red", style="dotted"]
-price--construction [color="red", style="dotted"]
 price--company [color="red", style="dotted"]
 }
