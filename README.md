@@ -24,6 +24,10 @@ dot -Tpdf dot/d1.dot -o graphs/d1.pdf
 
 When generating the KeyGraph, stopwords in the `noise\stopwords.txt` file are used to remove noise words. To add stopwords, add one stopword or symbol per line.
 
+## Web-based version
+
+A web-based version to access the tool is under development.
+
 ## References
 
 Ohsawa, Y., Benson, N. E., & Yachida, M. (1998). KeyGraph: Automatic indexing by co-occurrence graph based on building construction metaphor. International Forum on Research and Technology Advances in Digital Libraries (ADL), 12-18). IEEE.

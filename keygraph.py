@@ -311,7 +311,7 @@ if __name__ == "__main__":
     doc = Document(file_name = 'txt_files/' + fname + '.txt')
         
 #   Create a keygraph
-    kg = KeyGraph(doc, M=20, K=12) # default: M=30, K=12
+    kg = KeyGraph(doc, M=30, K=12) # default: M=30, K=12
     print("clusters", kg.clusters)
 
     kg.save_adjacency_list(fname)
