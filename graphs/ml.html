@@ -1,0 +1,108 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 600px;
+            height: 600px;
+            background-color: #ffffff;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"color": "black", "id": "provide", "label": "provide", "shape": "dot", "size": 10}, {"color": "black", "id": "platform", "label": "platform", "shape": "dot", "size": 10}, {"color": "black", "id": "customer", "label": "customer", "shape": "dot", "size": 10}, {"color": "black", "id": "automation", "label": "automation", "shape": "dot", "size": 10}, {"color": "red", "id": "software", "label": "software", "shape": "dot", "size": 10}, {"color": "red", "id": "offer", "label": "offer", "shape": "dot", "size": 10}, {"color": "black", "id": "learning", "label": "learning", "shape": "dot", "size": 10}, {"color": "red", "id": "focus", "label": "focus", "shape": "dot", "size": 10}, {"color": "red", "id": "data", "label": "data", "shape": "dot", "size": 10}, {"color": "black", "id": "machine", "label": "machine", "shape": "dot", "size": 10}, {"color": "black", "id": "company", "label": "company", "shape": "dot", "size": 10}, {"color": "black", "id": "technology", "label": "technology", "shape": "dot", "size": 10}, {"color": "red", "id": "insurance", "label": "insurance", "shape": "dot", "size": 10}, {"color": "black", "id": "artificial", "label": "artificial", "shape": "dot", "size": 10}, {"color": "black", "id": "intelligence", "label": "intelligence", "shape": "dot", "size": 10}, {"color": "black", "id": "develop", "label": "develop", "shape": "dot", "size": 10}, {"color": "red", "id": "business", "label": "business", "shape": "dot", "size": 10}, {"color": "red", "id": "system", "label": "system", "shape": "dot", "size": 10}, {"color": "black", "id": "service", "label": "service", "shape": "dot", "size": 10}, {"color": "black", "id": "ai", "label": "ai", "shape": "dot", "size": 10}, {"color": "black", "id": "help", "label": "help", "shape": "dot", "size": 10}, {"color": "red", "id": "risk", "label": "risk", "shape": "dot", "size": 10}, {"color": "red", "id": "work", "label": "work", "shape": "dot", "size": 10}]);
+        edges = new vis.DataSet([{"from": "provide", "to": "platform", "weight": 1}, {"from": "customer", "to": "platform", "weight": 1}, {"from": "automation", "to": "platform", "weight": 1}, {"color": "red", "from": "automation", "to": "software", "weight": 1}, {"color": "red", "from": "platform", "to": "offer", "weight": 1}, {"color": "red", "from": "platform", "to": "software", "weight": 1}, {"color": "red", "from": "learning", "to": "focus", "weight": 1}, {"color": "red", "from": "learning", "to": "data", "weight": 1}, {"color": "red", "from": "machine", "to": "data", "weight": 1}, {"from": "company", "to": "technology", "weight": 1}, {"color": "red", "from": "company", "to": "insurance", "weight": 1}, {"from": "artificial", "to": "technology", "weight": 1}, {"from": "artificial", "to": "intelligence", "weight": 1}, {"color": "red", "from": "artificial", "to": "software", "weight": 1}, {"from": "develop", "to": "intelligence", "weight": 1}, {"color": "red", "from": "develop", "to": "business", "weight": 1}, {"color": "red", "from": "develop", "to": "system", "weight": 1}, {"from": "intelligence", "to": "technology", "weight": 1}, {"color": "red", "from": "intelligence", "to": "software", "weight": 1}, {"from": "service", "to": "ai", "weight": 1}, {"from": "service", "to": "technology", "weight": 1}, {"from": "ai", "to": "technology", "weight": 1}, {"color": "red", "from": "ai", "to": "data", "weight": 1}, {"color": "red", "from": "help", "to": "risk", "weight": 1}, {"color": "red", "from": "help", "to": "work", "weight": 1}, {"color": "red", "from": "help", "to": "business", "weight": 1}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": false,
+            "type": "continuous"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+        
+        
+
+        
+
+        network = new vis.Network(container, data, options);
+	 
+        
+
+
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>

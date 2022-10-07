@@ -23,7 +23,7 @@ class Document:
         stopwords = nltk.corpus.stopwords.words('english')
         for line in codecs.open('./noise/stopwords.txt', 'r', 'utf-8'):
             stopwords.append(line.strip())
-        symbols = ["'", '"', '“', '”', '`', '’', '.', ',', '-', '!', '?', ':', ';', '(', ')', '[', ']', '&', '0', '%', '...', '--']
+        symbols = ["'", '"', '“', '”', '`', '’', '.', ',', '-', '!', '?', ':', ';', '(', ')', '[', ']', '&', '0', '%', '...', '--', '``', "''"]
         return stopwords + symbols
 
     # Divide into sentences

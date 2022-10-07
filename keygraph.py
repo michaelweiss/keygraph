@@ -5,10 +5,12 @@ import sys
 import codecs
 import pprint
 import time
+import math
 
 import networkx as nx
 from networkx.algorithms.community.centrality import girvan_newman
 from networkx.algorithms.community.quality import modularity
+from pyvis.network import Network 
 
 from document import Document
  
@@ -39,29 +41,52 @@ class KeyGraph:
 
 #   Compute base of frequently co-occurring words
     def compute_base(self, M):
+        mtime0 = time.time()
+
+        print("Compute base: top %d words and edges" % M)
         # Sort words by their frequency (in ascending order)
         freq_count = self.document.freq_count()
         words_freq = sorted(freq_count.items(), key=lambda x: x[1])
         
         # Compute unique words        
         self.words = [w for w, f in words_freq]
+
+        print("Unique words:", len(self.words))
         
         # Calculate word frequency in sentences
         self.wfs = self.calculate_wfs()
         
         # Determine high frequency words
-        hf = [w for w, f in words_freq[-M:]]
+        # Include all words with the higher or same frequency than the Mth word
+        wf_min = words_freq[-M][1] if len(words_freq) > M else 0
+        hf = [w for w, f in words_freq if f >= wf_min]
+
+        # Adjust M to the number of high frequency words
+        M = len(hf)
+
+        print("Adjust M to", M)
+        print("High frequency words:", len(hf))
 
         # Calculate co-occurrence degree of high-frequency words
         co = self.calculate_co_occurrence(hf)
 
         # Keep only the tightest links
-        co = [[i, j] for i, j, c in co[-M:]]
+        # Include all links with the higher of same co-occurrence degree as the Mth link
+        c_min = co[-M][2] if len(co) > M else 0
+        co = [[i, j] for i, j, c in co if c >= c_min]
 
         print(Util.pp(co))
 
-        # Compute the base of G (links between black nodes)
-        return self.find_clusters(co)
+        mtime1 = time.time()
+        print("Execution time of compute base before find clusters: %.4f seconds" % (mtime1 - mtime0))
+
+        # Compute the clusters (which are the basis for islands)
+        self.find_clusters(co)
+
+        mtime2 = time.time()
+        print("Execution time for find clusters: %4f" % (mtime2 - mtime1))
+
+        return co
     
 #   Calculate word frequency in sentences
     def calculate_wfs(self):
@@ -91,7 +116,10 @@ class KeyGraph:
         co_list.sort(key=lambda a: a[2])
         return co_list
 
-#   Detect communities in the base and remove edges between clusters
+#   Detect communities in the base
+#   The base is a list of pairs of words that are co-occurring in the document
+#   Clusters will be used to define islands of connected words, however, the edges
+#   between the clusters do not be removed to do that
     def find_clusters(self, base):
         G = nx.Graph()
         for i, j in base:
@@ -102,46 +130,59 @@ class KeyGraph:
         c_best = sorted([(c, m) for c, m in communities_by_quality], key=lambda x: x[1], reverse=True)
         c_best = c_best[0][0]
         # print(Util.pp(communities_by_quality))
-        print("clusters", modularity(G, c_best), c_best)
+        print("Clusters:", modularity(G, c_best), c_best)
         
         # only include clusters of more than one node (for now)
-        self.clusters = [c for c in c_best if len(c) > 1]
+        # self.clusters = [c for c in c_best if len(c) > 1]
+
+        # Include all clusters (do not remove edges between clusters)
+        self.clusters = c_best
 
         # for cluster in c_best:
         #     print(G.subgraph(cluster).edges())
-        new_base = [edge for cluster in c_best for edge in G.subgraph(cluster).edges()]
-        
-        return new_base
+        self.new_base = [edge for cluster in c_best for edge in G.subgraph(cluster).edges()]
+        # return new_base
+
+        # Links between clusters could be shown in a different color or dotted line
  
 #   Compute hubs that connect words in the base
     def compute_hubs(self, K):
+        print("Compute hubs: top %d key terms and bridges" % K)
         # Extract nodes in the base
         G_base = set([x for pair in self.base for x in pair])
 
         # Remove high frequency words from G_base, leaving non-high frequency words
         self.words = [w for w in self.words if w not in G_base]
 
+        print("Non-high frequency words:", len(self.words))
+
         # Compute key terms that connect clusters
         key = self.key(self.words)
 
-        print(Util.pp(key))
+        print("Key terms:", Util.pp(key))
 
         # Sort terms in D by keys
+        # Include all words with the higher or same frequency than the Kth word
         high_key = sorted(key.items(), key=lambda x: x[1])
-        high_key = high_key[-K:]
+        k_min = high_key[-K][1] if len(high_key) > K else 0
+        high_key = [w for w, k in high_key if k >= k_min]
+
+        # Adjust K to the number of high key words
+        K = len(high_key)
         
-        high_key = [k for k, f in high_key]
-
+        print("Adjusted K:", K)
         print(Util.pp(high_key))
-
+ 
         # Calculate columns
         C = self.columns(high_key, G_base)
         
         print(Util.pp(C))
 
         # Compute the top links between key terms (red nodes) and columns
-        G_C = [[i, j] for i, j, c in C[-K:]]
-                
+        # Include all links with the higher of same co-occurrence degree as the Kth link
+        c_min = C[-K][2] if len(C) > K else 0
+        G_C = [[i, j] for i, j, c in C if c >= c_min]
+
         # Compute adjacency list
         self.base_adj = self.adjacency_list(self.base, G_C)
         
@@ -270,9 +311,33 @@ class KeyGraph:
         fout = codecs.open("./adjacency_list/" + fname + ".txt", "w", "utf-8")
         fout.write(Util.pp(self.base_adj))
         fout.close()
+
+    def draw(self, fname):
+        G = nx.Graph()
+        
+        # Add all nodes in clusters
+        for cluster in self.clusters:
+            G.add_nodes_from(cluster, color='black')
+
+        # Add edges for nodes in clusters
+        for i, j in self.base:
+            if (i, j) in self.new_base:
+                G.add_edge(i, j)
+        
+        # Add edges for nodes in key terms
+        for i, j in self.G_C:
+            G.add_node(i, color='red')
+            G.add_edge(i, j, color='red')
+
+        # Remove isolated nodes
+        G.remove_nodes_from(list(nx.isolates(G)))
+
+        network = Network('600px', '600px')
+        network.from_nx(G)
+        network.show("./graphs/{}.html".format(fname))
     
     # Draw keygraph in dot format
-    def draw(self, fname):
+    def draw_dot(self, fname):
         fout = codecs.open("./dot/" + fname + ".dot","w","utf-8")
         fout.write('graph keygraph {\n')
         fout.write('graph [size="10,10", overlap="scale"]\n')
@@ -311,11 +376,13 @@ if __name__ == "__main__":
     doc = Document(file_name = 'txt_files/' + fname + '.txt')
         
 #   Create a keygraph
-    kg = KeyGraph(doc, M=30, K=12) # default: M=30, K=12
+    kg = KeyGraph(doc, M=20, K=8) # default: M=30, K=12
     print("clusters", kg.clusters)
 
     kg.save_adjacency_list(fname)
+    mtime = time.time()
     kg.draw(fname)
+    print("Time to draw keygraph: %.4f", (mtime - stime))
     
     etime = time.time()
     print("Execution time: %.4f seconds" % (etime - stime))

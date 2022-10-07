@@ -1,0 +1,108 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 600px;
+            height: 600px;
+            background-color: #ffffff;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"color": "black", "id": "milk", "label": "milk", "shape": "dot", "size": 10}, {"color": "black", "id": "fish", "label": "fish", "shape": "dot", "size": 10}, {"color": "red", "id": "homely-dishes", "label": "homely-dishes", "shape": "dot", "size": 10}, {"color": "black", "id": "vegetable", "label": "vegetable", "shape": "dot", "size": 10}, {"color": "red", "id": "light", "label": "light", "shape": "dot", "size": 10}, {"color": "black", "id": "magazine", "label": "magazine", "shape": "dot", "size": 10}, {"color": "black", "id": "baby-diaper", "label": "baby-diaper", "shape": "dot", "size": 10}, {"color": "black", "id": "beer", "label": "beer", "shape": "dot", "size": 10}, {"color": "black", "id": "cigarette", "label": "cigarette", "shape": "dot", "size": 10}, {"color": "black", "id": "appetizer", "label": "appetizer", "shape": "dot", "size": 10}, {"color": "black", "id": "toy", "label": "toy", "shape": "dot", "size": 10}, {"color": "black", "id": "instant-food", "label": "instant-food", "shape": "dot", "size": 10}, {"color": "black", "id": "snack", "label": "snack", "shape": "dot", "size": 10}]);
+        edges = new vis.DataSet([{"from": "milk", "to": "fish", "weight": 1}, {"color": "red", "from": "milk", "to": "homely-dishes", "weight": 1}, {"from": "fish", "to": "vegetable", "weight": 1}, {"color": "red", "from": "fish", "to": "light", "weight": 1}, {"from": "magazine", "to": "baby-diaper", "weight": 1}, {"from": "magazine", "to": "beer", "weight": 1}, {"from": "magazine", "to": "cigarette", "weight": 1}, {"color": "red", "from": "magazine", "to": "light", "weight": 1}, {"from": "appetizer", "to": "beer", "weight": 1}, {"color": "red", "from": "appetizer", "to": "homely-dishes", "weight": 1}, {"from": "cigarette", "to": "beer", "weight": 1}, {"color": "red", "from": "cigarette", "to": "light", "weight": 1}, {"from": "baby-diaper", "to": "beer", "weight": 1}, {"color": "red", "from": "beer", "to": "homely-dishes", "weight": 1}, {"from": "toy", "to": "instant-food", "weight": 1}, {"from": "toy", "to": "snack", "weight": 1}, {"from": "snack", "to": "instant-food", "weight": 1}, {"color": "red", "from": "instant-food", "to": "homely-dishes", "weight": 1}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": false,
+            "type": "continuous"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+        
+        
+
+        
+
+        network = new vis.Network(container, data, options);
+	 
+        
+
+
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>

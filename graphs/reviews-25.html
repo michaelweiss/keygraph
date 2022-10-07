@@ -1,0 +1,108 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 600px;
+            height: 600px;
+            background-color: #ffffff;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"color": "black", "id": "move", "label": "move", "shape": "dot", "size": 10}, {"color": "black", "id": "treadmill", "label": "treadmill", "shape": "dot", "size": 10}, {"color": "black", "id": "``", "label": "``", "shape": "dot", "size": 10}, {"color": "red", "id": "little", "label": "little", "shape": "dot", "size": 10}, {"color": "black", "id": "\u0027\u0027", "label": "\u0027\u0027", "shape": "dot", "size": 10}, {"color": "red", "id": "minute", "label": "minute", "shape": "dot", "size": 10}, {"color": "red", "id": "great", "label": "great", "shape": "dot", "size": 10}, {"color": "black", "id": "work", "label": "work", "shape": "dot", "size": 10}, {"color": "red", "id": "still", "label": "still", "shape": "dot", "size": 10}, {"color": "red", "id": "laptop", "label": "laptop", "shape": "dot", "size": 10}, {"color": "black", "id": "incline", "label": "incline", "shape": "dot", "size": 10}, {"color": "black", "id": "old", "label": "old", "shape": "dot", "size": 10}, {"color": "black", "id": "hold", "label": "hold", "shape": "dot", "size": 10}, {"color": "red", "id": "bar", "label": "bar", "shape": "dot", "size": 10}, {"color": "red", "id": "could", "label": "could", "shape": "dot", "size": 10}]);
+        edges = new vis.DataSet([{"from": "move", "to": "treadmill", "weight": 1}, {"from": "move", "to": "``", "weight": 1}, {"color": "red", "from": "move", "to": "little", "weight": 1}, {"from": "\u0027\u0027", "to": "``", "weight": 1}, {"color": "red", "from": "\u0027\u0027", "to": "minute", "weight": 1}, {"from": "``", "to": "treadmill", "weight": 1}, {"color": "red", "from": "``", "to": "little", "weight": 1}, {"color": "red", "from": "``", "to": "great", "weight": 1}, {"color": "red", "from": "``", "to": "minute", "weight": 1}, {"color": "red", "from": "treadmill", "to": "great", "weight": 1}, {"color": "red", "from": "work", "to": "still", "weight": 1}, {"color": "red", "from": "work", "to": "great", "weight": 1}, {"color": "red", "from": "work", "to": "laptop", "weight": 1}, {"from": "incline", "to": "old", "weight": 1}, {"from": "incline", "to": "hold", "weight": 1}, {"color": "red", "from": "old", "to": "bar", "weight": 1}, {"color": "red", "from": "hold", "to": "could", "weight": 1}, {"color": "red", "from": "hold", "to": "bar", "weight": 1}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": false,
+            "type": "continuous"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+        
+        
+
+        
+
+        network = new vis.Network(container, data, options);
+	 
+        
+
+
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>
