@@ -14,7 +14,7 @@ To run the scripts you need to have Python installed.
 
 ## Usage
 
-Suppose the document you want to analyze is in the file `d1.txt` in the `txt_files` folder. To create a keygraph from the text in this document, run:
+Suppose the document you want to analyze is in the file `d1.txt` in the `txt_files` folder. To create a keygraph from the text in this document run:
 
 ```bash
 python3 keygraph.py d1
@@ -22,14 +22,21 @@ python3 keygraph.py d1
 
 This creates the file `d1.html` in the `graphs` folder. Open this file to view the keygraph.
 
+A keygraph consists of clusters of black nodes, and red nodes. Clusters of black nodes represent established concepts. Red nodes represent chances which can be interpreted as new concepts. The output of the keygraph is a set of scenarios formed by combining chances with the clusters they connect.
+
 When generating a keygraph, stopwords in the `noise\stopwords.txt` file are used to remove noise words. To add more stopwords, add one stopword per line.
 
-There are two hyper-parameters:
+There are two hyper-parameters that affect the content of the keygraph:
 
 - $M$ is the number of high frequency words
 - $K$ is the number of keys (chances)
 
-Both are used to eliminate words and connections from the keygraph. $M$ is used during the selection of black nodes and the creation of clusters of black nodes (which represent established concepts). $K$ is the number of red nodes which connect or bridge clusters and represent chances (which represent new concepts). Note that both are upper limits: nodes will only be shown if they are connected to other nodes after the two selection steps (high frequency words and chances).
+Both are used to eliminate words and connections from the keygraph: 
+
+- $M$ is used during the selection of black nodes and the creation of clusters of black nodes
+- $K$ is the number of red nodes which connect or bridge clusters and represent chances 
+
+Note that both are upper limits: nodes will only be shown if they are connected to other nodes after the two selection steps (high frequency words and chances).
 
 ## Web-based version
 
