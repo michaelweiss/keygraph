@@ -28,15 +28,15 @@ When generating a keygraph, stopwords in the `noise\stopwords.txt` file are used
 
 There are two hyper-parameters that affect the content of the keygraph:
 
-- $M$ is the number of high frequency words
-- $K$ is the number of keys (chances)
+- $M$ is the number of high frequency words, as well as the maximum number of connections between them
+- $K$ is the number of keys (chances) and the maximum number of links between keys and clusters
 
 Both are used to eliminate words and connections from the keygraph: 
 
 - $M$ is used during the selection of black nodes and the creation of clusters of black nodes
 - $K$ is the number of red nodes which connect or bridge clusters and represent chances 
 
-Note that both are upper limits: nodes will only be shown if they are connected to other nodes after the two selection steps (high frequency words and chances).
+Note that both are upper limits: nodes will only be shown if they are connected to other nodes after the two selection steps (selection of high frequency words and identification of chances).
 
 ## Web-based version
 
